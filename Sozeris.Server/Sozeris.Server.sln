@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sozeris.Server.Data", "Sozeris.Server.Data\Sozeris.Server.Data.csproj", "{D3A913B6-51F1-459B-9D7D-D672D0DCB49E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sozeris.Server.Models", "Sozeris.Server.Models\Sozeris.Server.Models.csproj", "{7CFF9504-53AD-4D0A-A4E9-7A5347C88E95}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D3A913B6-51F1-459B-9D7D-D672D0DCB49E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3A913B6-51F1-459B-9D7D-D672D0DCB49E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3A913B6-51F1-459B-9D7D-D672D0DCB49E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3A913B6-51F1-459B-9D7D-D672D0DCB49E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CFF9504-53AD-4D0A-A4E9-7A5347C88E95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CFF9504-53AD-4D0A-A4E9-7A5347C88E95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CFF9504-53AD-4D0A-A4E9-7A5347C88E95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CFF9504-53AD-4D0A-A4E9-7A5347C88E95}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
