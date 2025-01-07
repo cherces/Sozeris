@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  db:
+    image: postgres:16.0
+    restart: always
+    container_name: sozeris-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - 5433:5432
+
+  pgadmin:
+    image: dpage/pgadmin4:7.0
+    restart: always
+    container_name: sozeris-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: def@mail.ru
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - 5050:80
