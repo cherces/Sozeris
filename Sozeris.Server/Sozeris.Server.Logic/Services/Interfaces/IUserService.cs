@@ -1,8 +1,10 @@
+
+
 using Sozeris.Server.Models.Entities;
 
-namespace Sozeris.Server.Data.Repositories.Interfaces;
+namespace Sozeris.Server.Logic.Services.Interfaces;
 
-public interface IUserRepository
+public interface IUserService
 {
     public Task<IEnumerable<User>> GetAllUsersAsync(User userFilter);
     public Task<User> GetUserByIdAsync(int userId);

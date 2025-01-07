@@ -5,7 +5,7 @@ using Sozeris.Server.Models.Entities;
 
 namespace Sozeris.Server.Data.Repositories;
 
-public class UserRepositories : IUserRepositories
+public class UserRepositories : IUserRepository
 {
     private readonly ApplicationDbContext _context;
 

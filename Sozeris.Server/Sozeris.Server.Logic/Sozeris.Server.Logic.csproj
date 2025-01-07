@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Sozeris.Server.Data\Sozeris.Server.Data.csproj" />
+      <ProjectReference Include="..\Sozeris.Server.Models\Sozeris.Server.Models.csproj" />
+    </ItemGroup>
+
+</Project>

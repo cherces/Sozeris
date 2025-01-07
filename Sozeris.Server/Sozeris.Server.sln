@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sozeris.Server.Data", "Soze
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sozeris.Server.Models", "Sozeris.Server.Models\Sozeris.Server.Models.csproj", "{7CFF9504-53AD-4D0A-A4E9-7A5347C88E95}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sozeris.Server.Logic", "Sozeris.Server.Logic\Sozeris.Server.Logic.csproj", "{DC87513D-E351-49BD-B018-1CD00D9B638F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{7CFF9504-53AD-4D0A-A4E9-7A5347C88E95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CFF9504-53AD-4D0A-A4E9-7A5347C88E95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CFF9504-53AD-4D0A-A4E9-7A5347C88E95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC87513D-E351-49BD-B018-1CD00D9B638F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC87513D-E351-49BD-B018-1CD00D9B638F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC87513D-E351-49BD-B018-1CD00D9B638F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC87513D-E351-49BD-B018-1CD00D9B638F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
