@@ -11,4 +11,8 @@
       <ProjectReference Include="..\Sozeris.Server.Models\Sozeris.Server.Models.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
+    </ItemGroup>
+
 </Project>
