@@ -2,9 +2,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using Sozeris.Server.Logic.Services.Interfaces;
 using Sozeris.Server.Models.Entities;
 
-namespace Sozeris.Server.Logic.Services.Interfaces;
+namespace Sozeris.Server.Logic.Services;
 
 public class AuthService : IAuthService
 {
