@@ -41,7 +41,8 @@ public class UserRepository : IUserRepository
     public async Task<bool> UpdateUserAsync(User user)
     {
         var oldUser = await _context.Users.FindAsync(user.Id);
-        oldUser = user;
+        oldUser ??= user;
+        _context.Users.Update(oldUser);
         return await _context.SaveChangesAsync() > 0;
     }
 

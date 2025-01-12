@@ -10,4 +10,6 @@ public class User : FilterBase
     public string Login { get; set; }
     [Required]
     public string Password { get; set; }
+    public string Role { get; set; }
+    public string BearerToken { get; set; }
 }
