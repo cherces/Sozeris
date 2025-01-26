@@ -12,6 +12,7 @@ public class ApplicationDbContext : Microsoft.EntityFrameworkCore.DbContext
     public DbSet<Product> Products { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<Delivery> Deliveries { get; set; }
+    public DbSet<JwtRefreshToken> JwtRefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -20,5 +21,6 @@ public class ApplicationDbContext : Microsoft.EntityFrameworkCore.DbContext
         modelBuilder.Entity<Product>().ToTable("Products");
         modelBuilder.Entity<Order>().ToTable("Orders");
         modelBuilder.Entity<Delivery>().ToTable("Deliveries");
+        modelBuilder.Entity<JwtRefreshToken>().ToTable("JwtRefreshTokens");
     }
 }

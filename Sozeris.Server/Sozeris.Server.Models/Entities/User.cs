@@ -1,15 +1,17 @@
 using System.ComponentModel.DataAnnotations;
+using Sozeris.Server.Models.Commns;
 
 namespace Sozeris.Server.Models.Entities;
 
 public class User : FilterBase
 {
-    [Key]
     public int Id { get; set; }
-    [Required]
     public string Login { get; set; }
-    [Required]
     public string Password { get; set; }
     public string Role { get; set; }
-    public string BearerToken { get; set; }
+    public string Name { get; set; }
+    public string Surname { get; set; }
+    public string Phone { get; set; }
+    
+    public virtual ICollection<Order> Orders { get; set; }
 }
