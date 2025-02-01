@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Sozeris.Server.Data.Repositories.Interfaces;
 using Sozeris.Server.Logic.Services.Interfaces;
@@ -14,9 +15,9 @@ public class AuthService : IAuthService
     private readonly JwtSettings _jwtSettings;
     private readonly IJwtTokenRepository _jwtTokenRepository;
 
-    public AuthService(JwtSettings jwtSettings, IJwtTokenRepository jwtTokenRepository)
+    public AuthService(IOptions<JwtSettings> jwtSettings, IJwtTokenRepository jwtTokenRepository)
     {
-        _jwtSettings = jwtSettings;
+        _jwtSettings = jwtSettings.Value;
         _jwtTokenRepository = jwtTokenRepository;
     }
     
