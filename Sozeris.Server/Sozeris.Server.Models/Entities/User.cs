@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Sozeris.Server.Models.Commns;
+using Sozeris.Server.Models.Commons;
 
 namespace Sozeris.Server.Models.Entities;
 
