@@ -11,6 +11,9 @@ services:
       POSTGRES_DB: postgres
     ports:
       - 5433:5432
+    volumes:
+      - ./sozeris.sql:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql/data
 
   pgadmin:
     image: dpage/pgadmin4:7.0

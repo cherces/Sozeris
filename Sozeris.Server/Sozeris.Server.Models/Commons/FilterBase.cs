@@ -1,4 +1,4 @@
-namespace Sozeris.Server.Models.Entities;
+namespace Sozeris.Server.Models.Commons;
 
 public class FilterBase
 {
