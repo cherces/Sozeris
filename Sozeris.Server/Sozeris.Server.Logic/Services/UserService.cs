@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Builder;
 using Sozeris.Server.Data.Repositories.Interfaces;
 using Sozeris.Server.Logic.Services.Interfaces;
 using Sozeris.Server.Models.Entities;
@@ -20,13 +21,13 @@ public class UserService : IUserService
         return users;
     }
 
-    public async Task<User> GetUserByIdAsync(int userId)
+    public async Task<User?> GetUserByIdAsync(int userId)
     {
         var user = await _userRepository.GetUserByIdAsync(userId);
         return user;
     }
 
-    public async Task<User> GetUserByLoginAsync(string login)
+    public async Task<User?> GetUserByLoginAsync(string login)
     {
         var user = await _userRepository.GetUserByLoginAsync(login);
         return user;
@@ -34,8 +35,8 @@ public class UserService : IUserService
     
     public async Task<bool> CreateUserAsync(User user)
     {
-        var newUser = await _userRepository.CreateUserAsync(user);
-        return newUser != null;
+        user.Password = HashPassword(user.Password);
+        return await _userRepository.CreateUserAsync(user);
     }
 
     public async Task<bool> UpdateUserAsync(User user)

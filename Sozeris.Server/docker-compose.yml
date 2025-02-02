@@ -12,8 +12,7 @@ services:
     ports:
       - 5433:5432
     volumes:
-      - ./sozeris.sql:/docker-entrypoint-initdb.d
-      - pgdata:/var/lib/postgresql/data
+      - ./sozeris.sql:/docker-entrypoint-initdb.d/001.sql
 
   pgadmin:
     image: dpage/pgadmin4:7.0
