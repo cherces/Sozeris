@@ -20,13 +20,13 @@ public class UserRepository : IUserRepository
         return users;
     }
 
-    public async Task<User> GetUserByIdAsync(int userId)
+    public async Task<User?> GetUserByIdAsync(int userId)
     {
         var user = await _context.Users.FindAsync(userId);
         return user;
     }
 
-    public async Task<User> GetUserByLoginAsync(string login)
+    public async Task<User?> GetUserByLoginAsync(string login)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Login == login);
         return user;
@@ -34,14 +34,15 @@ public class UserRepository : IUserRepository
 
     public async Task<bool> CreateUserAsync(User user)
     {
-        var newUser = await _context.Users.AddAsync(user);
+        await _context.Users.AddAsync(user);
         return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> UpdateUserAsync(User user)
     {
         var oldUser = await _context.Users.FindAsync(user.Id);
-        oldUser ??= user;
+        if (oldUser == null)
+            return false;
         _context.Users.Update(oldUser);
         return await _context.SaveChangesAsync() > 0;
     }
@@ -49,6 +50,8 @@ public class UserRepository : IUserRepository
     public async Task<bool> DeleteUserAsync(User user)
     {
         var userToDelete = await _context.Users.FindAsync(user.Id);
+        if (userToDelete == null)
+            return false;
         _context.Users.Remove(userToDelete);
         return await _context.SaveChangesAsync() > 0;
     }
