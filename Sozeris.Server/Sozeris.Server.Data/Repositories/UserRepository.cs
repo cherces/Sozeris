@@ -14,7 +14,7 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<User>> GetAllUsersAsync(User userFilter)
+    public async Task<IEnumerable<User>> GetAllUsersAsync()
     {
         var users = await _context.Users.ToListAsync();
         return users;
@@ -47,9 +47,9 @@ public class UserRepository : IUserRepository
         return await _context.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> DeleteUserAsync(User user)
+    public async Task<bool> DeleteUserAsync(int userId)
     {
-        var userToDelete = await _context.Users.FindAsync(user.Id);
+        var userToDelete = await _context.Users.FindAsync(userId);
         if (userToDelete == null)
             return false;
         _context.Users.Remove(userToDelete);

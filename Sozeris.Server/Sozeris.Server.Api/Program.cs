@@ -6,6 +6,7 @@ using Sozeris.Server.Api.Extensions;
 using Sozeris.Server.Data.DbContext;
 using Sozeris.Server.Data.Repositories;
 using Sozeris.Server.Logic.Services;
+using Sozeris.Server.Models.AutoMapping;
 using Sozeris.Server.Models.Commons;
 using Sozeris.Server.Models.Entities;
 
@@ -40,6 +41,8 @@ builder.Services.AddAuthentication(x =>
 
 builder.Services.AddApplicationRepositories();
 builder.Services.AddApplicationServices();
+
+builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
