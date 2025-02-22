@@ -1,11 +1,9 @@
-using System.ComponentModel.DataAnnotations;
-using Sozeris.Server.Models.Commons;
 using Sozeris.Server.Models.Enums;
 
-namespace Sozeris.Server.Models.Entities;
+namespace Sozeris.Server.Models.DTO;
 
-public class User
-{
+public class UserDTO
+{    
     public int Id { get; set; }
     public string Login { get; set; }
     public string Password { get; set; }
@@ -13,6 +11,4 @@ public class User
     public string Name { get; set; }
     public string Surname { get; set; }
     public string Phone { get; set; }
-    
-    public virtual ICollection<Order> Orders { get; set; }
 }

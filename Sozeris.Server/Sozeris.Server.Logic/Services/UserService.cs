@@ -1,7 +1,9 @@
 using System.Security.Cryptography;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Sozeris.Server.Data.Repositories.Interfaces;
 using Sozeris.Server.Logic.Services.Interfaces;
+using Sozeris.Server.Models.DTO;
 using Sozeris.Server.Models.Entities;
 
 namespace Sozeris.Server.Logic.Services;
@@ -9,16 +11,18 @@ namespace Sozeris.Server.Logic.Services;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
 
-    public UserService(IUserRepository userRepository)
+    public UserService(IUserRepository userRepository, IMapper mapper)
     {
         _userRepository = userRepository;
+        _mapper = mapper;
     }
 
-    public async Task<IEnumerable<User>> GetAllUsersAsync(User userFilter)
+    public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
     {
-        var users = await _userRepository.GetAllUsersAsync(userFilter);
-        return users;
+        var users = await _userRepository.GetAllUsersAsync();
+        return _mapper.Map<IEnumerable<UserDTO>>(users);
     }
 
     public async Task<User?> GetUserByIdAsync(int userId)
@@ -33,27 +37,29 @@ public class UserService : IUserService
         return user;
     }
     
-    public async Task<bool> CreateUserAsync(User user)
+    public async Task<bool> CreateUserAsync(UserDTO userDto)
     {
-        user.Password = HashPassword(user.Password);
+        userDto.Password = HashPassword(userDto.Password);
+        var user = _mapper.Map<User>(userDto);
         return await _userRepository.CreateUserAsync(user);
     }
 
-    public async Task<bool> UpdateUserAsync(User user)
+    public async Task<bool> UpdateUserAsync(UserDTO user)
     {
         var oldUser = await _userRepository.GetUserByIdAsync(user.Id);
         
         if (oldUser == null) return false;
         
-        oldUser.Login = user.Login;
+        _mapper.Map(user, oldUser);
+        
         oldUser.Password = HashPassword(user.Password);
         
-        return await _userRepository.UpdateUserAsync(user);
+        return await _userRepository.UpdateUserAsync(oldUser);
     }
 
-    public async Task<bool> DeleteUserAsync(User user)
+    public async Task<bool> DeleteUserAsync(int userId)
     {
-        return await _userRepository.DeleteUserAsync(user);
+        return await _userRepository.DeleteUserAsync(userId);
     }
     
     public string HashPassword(string password)
