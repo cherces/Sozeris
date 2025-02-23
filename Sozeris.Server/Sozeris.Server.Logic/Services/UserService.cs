@@ -22,25 +22,30 @@ public class UserService : IUserService
     public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
     {
         var users = await _userRepository.GetAllUsersAsync();
+        
         return _mapper.Map<IEnumerable<UserDTO>>(users);
     }
 
     public async Task<User?> GetUserByIdAsync(int userId)
     {
         var user = await _userRepository.GetUserByIdAsync(userId);
+        
         return user;
     }
 
     public async Task<User?> GetUserByLoginAsync(string login)
     {
         var user = await _userRepository.GetUserByLoginAsync(login);
+        
         return user;
     }
     
     public async Task<bool> CreateUserAsync(UserDTO userDto)
     {
         userDto.Password = HashPassword(userDto.Password);
+        
         var user = _mapper.Map<User>(userDto);
+        
         return await _userRepository.CreateUserAsync(user);
     }
 
@@ -57,9 +62,9 @@ public class UserService : IUserService
         return await _userRepository.UpdateUserAsync(oldUser);
     }
 
-    public async Task<bool> DeleteUserAsync(int userId)
+    public async Task<bool> DeleteUserByIdAsync(int userId)
     {
-        return await _userRepository.DeleteUserAsync(userId);
+        return await _userRepository.DeleteUserByIdAsync(userId);
     }
     
     public string HashPassword(string password)

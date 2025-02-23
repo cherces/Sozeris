@@ -14,5 +14,5 @@ public class User
     public string Surname { get; set; }
     public string Phone { get; set; }
     
-    public virtual ICollection<Order> Orders { get; set; }
+    public virtual ICollection<Subscription> Subscriptions { get; set; }
 }
