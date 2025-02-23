@@ -1,3 +1,11 @@
+CREATE TABLE "JwtRefreshTokens" (
+                            "Id" SERIAL PRIMARY KEY,
+                            "UserId" INT NOT NULL,
+                            "Token" VARCHAR(255) NOT NULL
+);
+
+ALTER TABLE "JwtRefreshTokens" OWNER TO postgres;
+
 CREATE TABLE "Products" (
     "Id" SERIAL PRIMARY KEY,
     "Name" VARCHAR(255) NOT NULL,
