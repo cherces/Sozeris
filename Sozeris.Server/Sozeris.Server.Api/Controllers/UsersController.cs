@@ -15,10 +15,11 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
     
-    [HttpGet]
+    [HttpGet("all")]
     public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers()
     {
         var users = await _userService.GetAllUsersAsync();
+        
         return Ok(users);
     }
 
@@ -26,26 +27,20 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<UserDTO>> GetUserById(int id)
     {
         var user = await _userService.GetUserByIdAsync(id);
-        if (user == null)
-        {
-            return NotFound();
-        }
+        
+        if (user == null) return NotFound();
+        
         return Ok(user);
     }
 
     [HttpPost]
     public async Task<ActionResult<UserDTO>> CreateUser([FromBody] UserDTO? user)
     {
-        if (user == null)
-        {
-            return BadRequest();
-        }
+        if (user == null) return BadRequest();
 
         var success = await _userService.CreateUserAsync(user);
-        if (!success)
-        {
-            return BadRequest("User creation failed.");
-        }
+        
+        if (!success) return BadRequest("User creation failed.");
 
         return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
     }
@@ -53,34 +48,25 @@ public class UsersController : ControllerBase
     [HttpPut]
     public async Task<ActionResult> UpdateUser([FromBody] UserDTO? user)
     {
-        if (user == null)
-        {
-            return BadRequest();
-        }
+        if (user == null) return BadRequest();
 
         var success = await _userService.UpdateUserAsync(user);
-        if (!success)
-        {
-            return NotFound();
-        }
+        
+        if (!success) return NotFound();
 
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteUser(int id)
+    [HttpDelete("{userId}")]
+    public async Task<ActionResult> DeleteUserById(int userId)
     {
-        var user = await _userService.GetUserByIdAsync(id);
-        if (user == null)
-        {
-            return NotFound();
-        }
+        var user = await _userService.GetUserByIdAsync(userId);
+        
+        if (user == null) return NotFound();
 
-        var success = await _userService.DeleteUserAsync(id);
-        if (!success)
-        {
-            return BadRequest("User deletion failed.");
-        }
+        var success = await _userService.DeleteUserByIdAsync(userId);
+        
+        if (!success) return BadRequest("User deletion failed.");
 
         return NoContent();
     }

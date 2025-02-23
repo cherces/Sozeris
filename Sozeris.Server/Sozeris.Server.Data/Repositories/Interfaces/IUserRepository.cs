@@ -4,10 +4,10 @@ namespace Sozeris.Server.Data.Repositories.Interfaces;
 
 public interface IUserRepository
 {
-    public Task<IEnumerable<User>> GetAllUsersAsync();
-    public Task<User?> GetUserByIdAsync(int userId);
-    public Task<User?> GetUserByLoginAsync(string login);
-    public Task<bool> CreateUserAsync(User user);
-    public Task<bool> UpdateUserAsync(User user);
-    public Task<bool> DeleteUserAsync(int userId);
+    Task<IEnumerable<User>> GetAllUsersAsync();
+    Task<User?> GetUserByIdAsync(int userId);
+    Task<User?> GetUserByLoginAsync(string login);
+    Task<bool> CreateUserAsync(User user);
+    Task<bool> UpdateUserAsync(User user);
+    Task<bool> DeleteUserByIdAsync(int userId);
 }

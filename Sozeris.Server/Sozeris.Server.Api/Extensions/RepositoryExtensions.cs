@@ -8,6 +8,8 @@ public static class RepositoryExtensions
     public static void AddApplicationRepositories(this IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
         services.AddScoped<IJwtTokenRepository, JwtTokenRepository>();
     }
 }

@@ -60,19 +60,20 @@ CREATE TABLE "Orders" (
     "SubscriptionId" INT NOT NULL,
     "ProductId" INT NOT NULL,
     "Quantity" INT NOT NULL,
+    "Price" DECIMAL NOT NULL,
     FOREIGN KEY ("SubscriptionId") REFERENCES "Subscriptions"("Id"),
     FOREIGN KEY ("ProductId") REFERENCES "Products"("Id")
 );
 
 ALTER TABLE "Orders" OWNER TO postgres;
 
-INSERT INTO "Orders" ("SubscriptionId", "ProductId", "Quantity") VALUES
-    (1, 1, 2),
-    (1, 2, 1),
-    (2, 1, 3),
-    (3, 2, 4),
-    (4, 1, 2),
-    (5, 2, 3);
+INSERT INTO "Orders" ("SubscriptionId", "ProductId", "Quantity", "Price") VALUES
+    (1, 1, 2, 120),
+    (1, 2, 1, 170),
+    (2, 1, 3, 80),
+    (3, 2, 4, 75),
+    (4, 1, 2, 210),
+    (5, 2, 3, 145);
 
 CREATE TABLE "Deliveries" (
     "Id" SERIAL PRIMARY KEY,
