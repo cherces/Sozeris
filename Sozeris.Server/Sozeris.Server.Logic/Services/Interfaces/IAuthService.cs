@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Sozeris.Server.Models.Commons;
+using Sozeris.Server.Models.DTO;
 using Sozeris.Server.Models.Entities;
 
 namespace Sozeris.Server.Logic.Services.Interfaces;

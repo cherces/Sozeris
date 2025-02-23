@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Sozeris.Server.Data.Repositories.Interfaces;
 using Sozeris.Server.Logic.Services.Interfaces;
 using Sozeris.Server.Models.Commons;
+using Sozeris.Server.Models.DTO;
 using Sozeris.Server.Models.Entities;
 
 namespace Sozeris.Server.Logic.Services;
