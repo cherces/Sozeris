@@ -30,9 +30,20 @@ public class JwtTokenRepository : IJwtTokenRepository
         return await _context.SaveChangesAsync() > 0;
     }
     
-    public async Task<bool> DeleteRefreshTokenAsync(int userId)
+    public async Task<bool> DeleteRefreshTokenByUserIdAsync(int userId)
     {
         var token = await _context.JwtRefreshTokens.FirstOrDefaultAsync(t => t.UserId == userId);
+
+        if (token != null)
+        {
+            _context.JwtRefreshTokens.Remove(token);
+        }
+        return await _context.SaveChangesAsync() > 0;
+    }
+    
+    public async Task<bool> DeleteRefreshTokenAsync(string refreshToken)
+    {
+        var token = await _context.JwtRefreshTokens.FirstOrDefaultAsync(t => t.Token == refreshToken);
 
         if (token != null)
         {

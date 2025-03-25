@@ -11,7 +11,7 @@ public class ApplicationDbContext : Microsoft.EntityFrameworkCore.DbContext
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<Order> Orders { get; set; }
-    public DbSet<Delivery> Deliveries { get; set; }
+    public DbSet<DeliveryHistory> DeliveryHistory { get; set; }
     public DbSet<JwtRefreshToken> JwtRefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -20,7 +20,7 @@ public class ApplicationDbContext : Microsoft.EntityFrameworkCore.DbContext
         modelBuilder.Entity<Subscription>().ToTable("Subscriptions");
         modelBuilder.Entity<Product>().ToTable("Products");
         modelBuilder.Entity<Order>().ToTable("Orders");
-        modelBuilder.Entity<Delivery>().ToTable("Deliveries");
+        modelBuilder.Entity<DeliveryHistory>().ToTable("DeliveryHistory");
         modelBuilder.Entity<JwtRefreshToken>().ToTable("JwtRefreshTokens");
     }
 }

@@ -26,20 +26,32 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] UserDTO userDto)
+    public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
     {
-        var userFromDb = await _userService.GetUserByLoginAsync(userDto.Login);
+        var userFromDb = await _userService.GetUserByLoginAsync(loginModel.Username);
     
         if (userFromDb == null)
             return Unauthorized();
 
-        if (!_userService.VerifyPassword(userDto.Password, userFromDb.Password))
+        if (!_userService.VerifyPassword(loginModel.Password, userFromDb.Password))
             return Unauthorized();
         
         var accessToken = _authService.GenerateAccessTokenAsync(userFromDb);
         var refreshToken = await _authService.GenerateRefreshTokenAsync(userFromDb.Id);
         
         return Ok(new JwtTokenModel { AccessToken = accessToken, RefreshToken = refreshToken });
+    }
+    
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout([FromBody] string refreshToken)
+    {
+        var userId = await _jwtTokenRepository.GetUserIdByRefreshTokenAsync(refreshToken);
+        if (userId == null)
+            return Unauthorized();
+
+        await _jwtTokenRepository.DeleteRefreshTokenAsync(refreshToken);
+
+        return Ok(new { message = "Logout successful" });
     }
 
     [HttpPost("refreshToken")]

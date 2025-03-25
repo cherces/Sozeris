@@ -75,7 +75,7 @@ INSERT INTO "Orders" ("SubscriptionId", "ProductId", "Quantity", "Price") VALUES
     (4, 1, 2, 210),
     (5, 2, 3, 145);
 
-CREATE TABLE "Deliveries" (
+CREATE TABLE "DeliveryHistory" (
     "Id" SERIAL PRIMARY KEY,
     "SubscriptionId" INT NOT NULL,
     "DeliveryDate" TIMESTAMP NOT NULL,
@@ -83,11 +83,11 @@ CREATE TABLE "Deliveries" (
     FOREIGN KEY ("SubscriptionId") REFERENCES "Subscriptions"("Id")
 );
 
-ALTER TABLE "Deliveries" OWNER TO postgres;
+ALTER TABLE "DeliveryHistory" OWNER TO postgres;
 
-INSERT INTO "Deliveries" ("SubscriptionId", "DeliveryDate", "IsDelivered") VALUES
-    (1, '2023-01-05', TRUE),
-    (2, '2023-01-15', FALSE),
-    (3, '2023-01-20', TRUE),
-    (4, '2023-02-05', TRUE),
-    (5, '2023-02-12', FALSE);
+INSERT INTO "DeliveryHistory" ("SubscriptionId", "DeliveryDate") VALUES
+    (1, '2023-01-05'),
+    (2, '2023-01-15'),
+    (3, '2023-01-20'),
+    (4, '2023-02-05'),
+    (5, '2023-02-12');
