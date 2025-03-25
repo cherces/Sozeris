@@ -5,7 +5,8 @@ namespace Sozeris.Server.Data.Repositories.Interfaces;
 public interface IJwtTokenRepository
 {
     Task<bool> AddRefreshTokenAsync(int userId ,string refreshToken);
-    Task<bool> DeleteRefreshTokenAsync(int userId);
+    Task<bool> DeleteRefreshTokenByUserIdAsync(int userId);
+    Task<bool> DeleteRefreshTokenAsync(string refreshToken);
     Task<string?> GetRefreshTokenAsync(int userId);
     Task<int?> GetUserIdByRefreshTokenAsync(string refreshToken);
 }

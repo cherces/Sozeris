@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Sozeris.Utils"
+             x:Class="Sozeris.Pages.LoginPage"
+             Title="Login">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:StringToBooleanConverter x:Key="StringToBooleanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <StackLayout Padding="20">
+        <Label Text="Username" />
+        <Entry Text="{Binding LoginModel.Username}" />
+
+        <Label Text="Password" />
+        <Entry Text="{Binding LoginModel.Password}" IsPassword="True" />
+
+        <Button Text="Login" Command="{Binding LoginCommand}" />
+
+        <Label Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBooleanConverter}}" />
+    </StackLayout>
+</ContentPage>
