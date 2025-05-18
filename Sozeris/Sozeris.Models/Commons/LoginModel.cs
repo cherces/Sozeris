@@ -1,4 +1,4 @@
-namespace Sozeris.Models;
+namespace Sozeris.Models.Commons;
 
 public class LoginModel
 {

@@ -2,23 +2,27 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:Sozeris.Utils"
              x:Class="Sozeris.Pages.LoginPage"
-             Title="Login">
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <local:StringToBooleanConverter x:Key="StringToBooleanConverter" />
-        </ResourceDictionary>
-    </ContentPage.Resources>
-    <StackLayout Padding="20">
-        <Label Text="Username" />
-        <Entry Text="{Binding LoginModel.Username}" />
+             Title="Авторизация">
+    <VerticalStackLayout Padding="30" Spacing="15" VerticalOptions="Center">
+        <Label Text="Логин" FontAttributes="Bold" />
+        <Entry Placeholder="Введите логин" 
+               Text="{Binding LoginModel.Username}" 
+               Keyboard="Email" />
 
-        <Label Text="Password" />
-        <Entry Text="{Binding LoginModel.Password}" IsPassword="True" />
+        <Label Text="Пароль" FontAttributes="Bold" />
+        <Entry Placeholder="Введите пароль" 
+               Text="{Binding LoginModel.Password}" 
+               IsPassword="True" />
 
-        <Button Text="Login" Command="{Binding LoginCommand}" />
+        <Button Text="Войти" 
+                Command="{Binding LoginCommand}" 
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}" />
 
-        <Label Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBooleanConverter}}" />
-    </StackLayout>
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+        <Label Text="{Binding ErrorMessage}" 
+               TextColor="Red" 
+               IsVisible="{Binding HasError}" />
+    </VerticalStackLayout>
 </ContentPage>
