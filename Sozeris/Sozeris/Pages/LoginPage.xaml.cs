@@ -1,9 +1,8 @@
-using Sozeris.Services;
 using Sozeris.ViewModels;
 
 namespace Sozeris.Pages;
 
-public partial class LoginPage : ContentPage
+public partial class LoginPage
 {
     public LoginPage(LoginViewModel loginViewModel)
     {
