@@ -1,25 +1,32 @@
 using System.ComponentModel;
 using System.Windows.Input;
+using Sozeris.Logic.Services.Interfaces;
 using Sozeris.Models;
-using Sozeris.Services;
-using Sozeris.Services.Interfaces;
+using Sozeris.Models.Commons;
 
 namespace Sozeris.ViewModels;
 
 public class LoginViewModel : INotifyPropertyChanged
 {
     private readonly IAuthService _authService;
+    private readonly IUserSessionService _sessionService;
     private LoginModel _loginModel;
-    private string _errorMessage;
+    private string _errorMessage = string.Empty;
+    private bool _isBusy;
 
     public event PropertyChangedEventHandler PropertyChanged;
+    
+    public event EventHandler LoginSucceeded;
+    
     public ICommand LoginCommand { get; }
-    public LoginViewModel(IAuthService authService)
+    
+    public LoginViewModel(IAuthService authService, IUserSessionService userSessionService)
     {
         _authService = authService;
-        _loginModel = new LoginModel();
-        LoginCommand = new Command(OnLogin);
+        _sessionService = userSessionService;
+        LoginCommand = new Command(async () => await OnLogin(), () => !IsBusy);
     }
+    
     public LoginModel LoginModel
     {
         get => _loginModel;
@@ -29,6 +36,7 @@ public class LoginViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(LoginModel));
         }
     }
+    
     public string ErrorMessage
     {
         get => _errorMessage;
@@ -38,23 +46,56 @@ public class LoginViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(ErrorMessage));
         }
     }
-    private async void OnLogin()
+    
+    public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+
+    public bool IsBusy
     {
-        if (LoginModel == null || string.IsNullOrEmpty(LoginModel.Username) || string.IsNullOrEmpty(LoginModel.Password))
+        get => _isBusy;
+        set
         {
-            ErrorMessage = "Username and Password cannot be empty.";
+            _isBusy = value;
+            OnPropertyChanged(nameof(IsBusy));
+            (LoginCommand as Command)?.ChangeCanExecute();
+        }
+    }
+    
+    private async Task OnLogin()
+    {
+        if (string.IsNullOrWhiteSpace(LoginModel?.Username) || string.IsNullOrWhiteSpace(LoginModel?.Password))
+        {
+            ErrorMessage = "Имя пользователя и пароль не могут быть пустыми.";
             return;
         }
-        
+
+        IsBusy = true;
+        ErrorMessage = string.Empty;
+
         try
         {
-            await _authService.LoginAsync(loginModel: LoginModel);
-            
-            await Shell.Current.GoToAsync("//MainPage");
+            JwtTokenModel tokens = await _authService.LoginAsync(LoginModel);
+
+            if (string.IsNullOrWhiteSpace(tokens?.AccessToken))
+            {
+                ErrorMessage = "Не удалось получить токены.";
+                return;
+            }
+
+            await _sessionService.SaveTokensAsync(tokens);
+
+            LoginSucceeded?.Invoke(this, EventArgs.Empty);
         }
         catch (UnauthorizedAccessException ex)
         {
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Неверные учетные данные.";
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = "Произошла ошибка: " + ex.Message;
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
     protected virtual void OnPropertyChanged(string propertyName)

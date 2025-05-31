@@ -1,3 +1,5 @@
+using Sozeris.Models.Enums;
+
 namespace Sozeris.Models;
 
 public class JwtTokenModel

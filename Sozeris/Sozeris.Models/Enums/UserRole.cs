@@ -3,6 +3,6 @@ namespace Sozeris.Models.Enums;
 public enum UserRole
 {
     User = 1,
-    Admin = 2,
-    SuperAdmin = 3
+    Delivery = 2,
+    Admin = 3
 }
