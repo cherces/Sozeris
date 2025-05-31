@@ -79,4 +79,9 @@
       </Compile>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Sozeris.Logic\Sozeris.Logic.csproj" />
+      <ProjectReference Include="..\Sozeris.Models\Sozeris.Models.csproj" />
+    </ItemGroup>
+
 </Project>

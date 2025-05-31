@@ -1,5 +1,7 @@
+using Sozeris.Logic.Helpers;
 using Sozeris.Logic.Services.Interfaces;
 using Sozeris.Models;
+using Sozeris.Models.Enums;
 
 namespace Sozeris.Logic.Services;
 
@@ -13,8 +15,12 @@ public class UserSessionService : IUserSessionService
     {
         await SecureStorage.SetAsync(accessTokenKey, tokens.AccessToken);
         await SecureStorage.SetAsync(refreshTokenKey, tokens.RefreshToken);
-        await SecureStorage.SetAsync(roleKey, "User");
-    }
+        var role = JwtHelper.ExtractUserRole(tokens.AccessToken);
+
+        if (role != null)
+        {
+            await SecureStorage.SetAsync(roleKey, ((int)role).ToString());
+        }    }
 
     public Task ClearSessionAsync()
     {
@@ -31,8 +37,14 @@ public class UserSessionService : IUserSessionService
         return !string.IsNullOrEmpty(token);
     }
 
-    public async Task<string> GetRoleAsync()
+    public async Task<UserRole?> GetRoleAsync()
     {
-        return await SecureStorage.GetAsync(roleKey) ?? string.Empty;
+        var roleStr = await SecureStorage.GetAsync(roleKey);
+        if (int.TryParse(roleStr, out int roleValue) && Enum.IsDefined(typeof(UserRole), roleValue))
+        {
+            return (UserRole)roleValue;
+        }
+
+        return null;
     }
 }

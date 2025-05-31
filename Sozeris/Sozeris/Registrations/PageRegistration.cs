@@ -9,5 +9,11 @@ public static class PageRegistration
     {
         services.AddTransient<LoginPage>(); 
         services.AddTransient<MainPage>();
+        services.AddTransient<HomePage>();
+        services.AddTransient<LoadingPage>();
+        services.AddTransient<UserProfilePage>();
+        services.AddTransient<UserRegistrationPage>();
+        services.AddTransient<UserSubscriptionPage>();
+        services.AddTransient<ProductsCatalog>();
     }
 }

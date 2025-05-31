@@ -1,41 +1,62 @@
-﻿using Sozeris.Logic.Services.Interfaces;
+﻿using System.Diagnostics;
+using Sozeris.Logic.Services.Interfaces;
+using Sozeris.Models.Enums;
 using Sozeris.Pages;
 
 namespace Sozeris;
 
-public partial class App : Application
+public partial class App
 {
     private readonly IServiceProvider _services;
-
+    private Window _mainWindow;
+    
     public App(IServiceProvider services)
     {
         InitializeComponent();
         _services = services;
     }
+    
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        var window = new Window(new LoadingPage());
+        _mainWindow = new Window(new LoadingPage());
 
-        _ = InitializeAppAsync(window);
+        _ = InitializeAppAsync(_mainWindow);
 
-        return window;
+        return _mainWindow;
     }
 
     private async Task InitializeAppAsync(Window window)
     {
         var sessionService = _services.GetRequiredService<IUserSessionService>();
 
-        bool isAuthenticated = await sessionService.IsAuthenticatedAsync();
+        var isAuthenticated = await sessionService.IsAuthenticatedAsync();
+        isAuthenticated = true;
 
-        await MainThread.InvokeOnMainThreadAsync(async () =>
+        if (isAuthenticated)
         {
-            var shell = new AppShell();
-            window.Page = shell;
+            UserRole role = UserRole.User; //isAuthenticated
+            //? await sessionService.GetRoleAsync() ?? UserRole.User
+            //: (UserRole?)null;
+            _mainWindow.Page = new AppShell(role);
+        }
+        else
+        {
+            var loginPage = _services.GetRequiredService<LoginPage>();
+            loginPage.LoginSucceeded += OnLoginSucceeded;
+            _mainWindow.Page = loginPage;
+        }
+    }
+    
+    private void OnLoginSucceeded(object? sender, EventArgs e)
+    {
+        if (_mainWindow == null) return;
 
-            if (isAuthenticated)
-                await shell.GoToAsync("//home");
-            else
-                await shell.GoToAsync("//login");
-        });
+        var sessionService = _services.GetRequiredService<IUserSessionService>();
+        
+        UserRole role = UserRole.User; //isAuthenticated
+        //? await sessionService.GetRoleAsync() ?? UserRole.User
+        //: (UserRole?)null;
+        
+        _mainWindow.Page = new AppShell(role);
     }
 }
