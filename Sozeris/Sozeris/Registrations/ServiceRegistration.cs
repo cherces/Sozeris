@@ -10,5 +10,7 @@ public static class ServiceRegistration
     {
         services.AddSingleton<IAuthService, AuthService>();
         services.AddSingleton<IUserSessionService, UserSessionService>();
+        services.AddSingleton<IProductService, ProductService>();
+        services.AddSingleton<ICartService, CartService>();
     }
 }

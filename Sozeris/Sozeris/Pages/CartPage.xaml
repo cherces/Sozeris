@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Sozeris.Pages.CartPage"
+             x:Name="PageRef">
+    
+    <Grid RowDefinitions="*, Auto" Padding="20">
+
+        <!-- Верхняя часть со списком -->
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="20">
+
+                <!-- Если корзина пуста -->
+                <Label Text="Корзина пуста"
+                       FontSize="18"
+                       HorizontalOptions="Center"
+                       IsVisible="{Binding HasItems, Converter={StaticResource InverseBooleanConverter}}" />
+
+                <!-- Список товаров -->
+                <CollectionView ItemsSource="{Binding CartItems}"
+                                IsVisible="{Binding HasItems}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame CornerRadius="10" BackgroundColor="#fffbe6" Padding="15">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <VerticalStackLayout>
+                                        <Label Text="{Binding Product.Name}"
+                                               FontSize="18"
+                                               FontAttributes="Bold" />
+                                        <Label Text="{Binding Quantity, StringFormat='Количество: {0}'}"/>
+                                        <Label Text="{Binding Product.Price, StringFormat='Цена за шт: {0}₽'}"/>
+                                        <Label Text="{Binding TotalPrice, StringFormat='Сумма: {0}₽'}"
+                                               FontAttributes="Italic"/>
+                                    </VerticalStackLayout>
+                                    <Button Text="Удалить"
+                                            Command="{Binding BindingContext.RemoveCommand, Source={x:Reference PageRef}}"
+                                            CommandParameter="{Binding .}"
+                                            TextColor="Red"
+                                            BackgroundColor="Transparent"
+                                            Grid.Column="1"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Итоговая сумма -->
+                <Label Text="{Binding TotalPrice, StringFormat='Итого: {0}₽'}"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="#222"
+                       HorizontalOptions="End"
+                       IsVisible="{Binding HasItems}" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Нижняя фиксированная кнопка -->
+        <Button Text="Оформить подписку"
+                Grid.Row="1"
+                Margin="0,10,0,0"
+                BackgroundColor="#007AFF"
+                TextColor="White"
+                FontAttributes="Bold"
+                Command="{Binding SubscribeCommand}"
+                IsVisible="{Binding HasItems}" />
+        
+    </Grid>
+    
+</ContentPage>

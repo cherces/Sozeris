@@ -3,6 +3,7 @@ using Sozeris.Registrations;
 using System.Net.Http;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
+using Sozeris.Logic.Services;
 using Sozeris.Models.Config;
 using Sozeris.Services;
 using Sozeris.ViewModels;
@@ -21,11 +22,11 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
-        builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddSingleton<SozerisServerApiConfig>(new SozerisServerApiConfig("https://api.com"));
 
         builder.Services.AddHttpClient<AuthService>();
-
+        
+        builder.Services.AddViewModels();
         builder.Services.AddServices();
         builder.Services.AddPages();
         
