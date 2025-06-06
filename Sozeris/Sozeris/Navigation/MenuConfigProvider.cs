@@ -1,5 +1,4 @@
 using Sozeris.Models.Config;
-using Sozeris.Models.Entities;
 using Sozeris.Models.Enums;
 using Sozeris.Pages;
 
@@ -35,13 +34,6 @@ public class MenuConfigProvider
                 PageType = typeof(UserProfilePage),
                 Route = "profile",
                 Order = 1
-            },
-            new MenuItemConfig
-            {
-                Title = "redtrfytg",
-                PageType = typeof(MainPage),
-                Route = "main",
-                Order = 20
             }
         };
 
@@ -76,15 +68,22 @@ public class MenuConfigProvider
             {
                 Title = "Мои подписки",
                 PageType = typeof(UserSubscriptionPage),
-                Route = "user/subscriptions",
+                Route = "subscriptions",
                 Order = 2
             },
             new MenuItemConfig
             {
                 Title = "Каталог",
-                PageType = typeof(ProductsCatalog),
+                PageType = typeof(ProductsCatalogPage),
                 Route = "productsCatalog",
                 Order = 3
+            },
+            new MenuItemConfig
+            {
+                Title = "Корзина",
+                PageType = typeof(CartPage),
+                Route = "cart",
+                Order = 4
             }
         };
 

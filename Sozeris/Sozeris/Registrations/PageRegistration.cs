@@ -8,12 +8,12 @@ public static class PageRegistration
     public static void AddPages(this IServiceCollection services)
     {
         services.AddTransient<LoginPage>(); 
-        services.AddTransient<MainPage>();
         services.AddTransient<HomePage>();
         services.AddTransient<LoadingPage>();
         services.AddTransient<UserProfilePage>();
         services.AddTransient<UserRegistrationPage>();
         services.AddTransient<UserSubscriptionPage>();
-        services.AddTransient<ProductsCatalog>();
+        services.AddTransient<ProductsCatalogPage>();
+        services.AddTransient<CartPage>();
     }
 }

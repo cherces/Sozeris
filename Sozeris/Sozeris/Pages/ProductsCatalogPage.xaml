@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Sozeris.Pages.ProductsCatalogPage">
+    <Grid>
+
+        <ScrollView>
+            <VerticalStackLayout Padding="20" Spacing="20">
+
+                <Label Text="Выберите хлеб для подписки"
+                       FontSize="24"
+                       TextColor="White"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+
+                <CollectionView x:Name="ProductList" ItemsSource="{Binding Products}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="#ffffffcc"
+                                   CornerRadius="16"
+                                   Padding="15"
+                                   HasShadow="True"
+                                   Margin="0,5">
+                                <HorizontalStackLayout Spacing="15">
+                                    <Image Source="{Binding Image}" WidthRequest="80" HeightRequest="80"/>
+
+                                    <VerticalStackLayout>
+                                        <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" TextColor="#333"/>
+                                        <Label Text="{Binding Price, StringFormat='{}{0} ₽ / шт'}" FontSize="14" TextColor="#666"/>
+                                        <Button Text="Добавить"
+                                                BackgroundColor="#D97B29"
+                                                TextColor="White"
+                                                CornerRadius="8"
+                                                HeightRequest="35"
+                                                Command="{Binding BindingContext.AddCommand, Source={x:Reference Name=ProductList}}"
+                                                CommandParameter="{Binding}"/>
+                                    </VerticalStackLayout>
+                                </HorizontalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Всплывающее окно выбора количества -->
+        <ContentView IsVisible="{Binding IsPopupVisible}"
+                     BackgroundColor="#00000080">
+            <Frame BackgroundColor="#fffbe6"
+                   CornerRadius="20"
+                   Padding="20"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   WidthRequest="300">
+
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="{Binding SelectedProduct.Name}"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           TextColor="#333"/>
+
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
+                        <Button Text="−" WidthRequest="40" Command="{Binding DecreaseCommand}"/>
+                        <Label Text="{Binding Quantity}" FontSize="18" TextColor="#333" VerticalOptions="Center"/>
+                        <Button Text="+" WidthRequest="40" Command="{Binding IncreaseCommand}"/>
+                    </HorizontalStackLayout>
+
+                    <Button Text="Подтвердить"
+                            BackgroundColor="#D97B29"
+                            TextColor="White"
+                            CornerRadius="8"
+                            HeightRequest="45"
+                            Command="{Binding ConfirmCommand}"/>
+                </VerticalStackLayout>
+            </Frame>
+        </ContentView>
+        
+        <!-- Всплывающее уведомление (toast) по центру -->
+        <ContentView IsVisible="{Binding IsToastVisible}"
+                     BackgroundColor="#00000080"
+                     HorizontalOptions="FillAndExpand"
+                     VerticalOptions="FillAndExpand"
+                     Padding="20"
+                     InputTransparent="False">
+    
+            <Grid HorizontalOptions="Center"
+                  VerticalOptions="Center">
+
+                <Frame BackgroundColor="White"
+                       CornerRadius="20"
+                       Padding="25"
+                       HasShadow="True"
+                       WidthRequest="300">
+
+                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="15">
+
+                        <!-- Заголовок -->
+                        <Label Text="Добавлено"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               TextColor="#222"/>
+
+                        <!-- Текст из ViewModel -->
+                        <Label Text="{Binding ToastText}"
+                               FontSize="16"
+                               HorizontalOptions="Center"
+                               TextColor="#666"
+                               HorizontalTextAlignment="Center"
+                        />
+
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
+        </ContentView>
+    </Grid>
+</ContentPage>
