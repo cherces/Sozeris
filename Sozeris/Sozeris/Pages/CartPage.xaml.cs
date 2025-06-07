@@ -2,7 +2,7 @@ using Sozeris.ViewModels;
 
 namespace Sozeris.Pages;
 
-public partial class CartPage : ContentPage
+public partial class CartPage
 {
     private readonly CartViewModel _viewModel;
 

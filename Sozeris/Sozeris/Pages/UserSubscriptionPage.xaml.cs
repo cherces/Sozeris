@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Sozeris.Pages;
 
-public partial class ProductsCatalog : ContentPage
+public partial class UserSubscriptionPage : ContentPage
 {
-    public ProductsCatalog()
+    public UserSubscriptionPage()
     {
         InitializeComponent();
     }
