@@ -13,24 +13,34 @@ public class CartViewModel : INotifyPropertyChanged
 
     public ObservableCollection<CartItem> CartItems { get; set; } = new();
 
-    private decimal _totalPrice;
-    public decimal TotalPrice
+    private decimal _cartTotalPrice;
+    public decimal CartTotalPrice
     {
-        get => _totalPrice;
+        get => _cartTotalPrice;
         set
         {
-            _totalPrice = value;
+            _cartTotalPrice = value;
             OnPropertyChanged();
         }
     }
 
+    private bool _hasItems;
+    public bool HasItems
+    {
+        get => _hasItems;
+        set
+        {
+            _hasItems = value;
+            OnPropertyChanged();
+        }
+    }
+    
     public ICommand RemoveCommand { get; }
     public ICommand SubscribeCommand { get; }
 
     public CartViewModel(ICartService cartService)
     {
         _cartService = cartService;
-        LoadCart();
         RemoveCommand = new Command<CartItem>(RemoveItem);
         SubscribeCommand = new Command(OnSubscribe);
     }
@@ -40,8 +50,6 @@ public class CartViewModel : INotifyPropertyChanged
         Application.Current.MainPage.DisplayAlert("Подписка", "Подписка успешно оформлена", "OK");
     }
     
-    public bool HasItems => CartItems.Any();
-
     public void LoadCart()
     {
         CartItems.Clear();
@@ -49,7 +57,7 @@ public class CartViewModel : INotifyPropertyChanged
             CartItems.Add(item);
 
         CalculateTotal();
-        OnPropertyChanged(nameof(HasItems));
+        HasItems = CartItems.Any();
     }
 
     private void RemoveItem(CartItem item)
@@ -57,12 +65,12 @@ public class CartViewModel : INotifyPropertyChanged
         _cartService.RemoveFromCart(item);
         CartItems.Remove(item);
         CalculateTotal();
-        OnPropertyChanged(nameof(HasItems));
+        HasItems = CartItems.Any();
     }
 
     private void CalculateTotal()
     {
-        TotalPrice = CartItems.Sum(x => x.TotalPrice);
+        CartTotalPrice = CartItems.Sum(x => x.TotalPrice);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

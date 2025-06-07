@@ -1,70 +1,116 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Sozeris.Pages.CartPage"
-             x:Name="PageRef">
-    
-    <Grid RowDefinitions="*, Auto" Padding="20">
+             x:Name="PageRef"
+             BackgroundColor="#FAF5EF">
 
-        <!-- Верхняя часть со списком -->
+    <Grid RowDefinitions="*,Auto" Padding="24">
+
+        <!-- Основной контент с заголовком и товарами -->
         <ScrollView Grid.Row="0">
             <VerticalStackLayout Spacing="20">
 
-                <!-- Если корзина пуста -->
+                <!-- Заголовок -->
+                <Label Text="Ваша корзина"
+                       FontSize="32"
+                       FontAttributes="Bold"
+                       TextColor="#2C1B12"
+                       HorizontalOptions="Center"
+                       Margin="0,0,0,10"/>
+
+                <!-- Пустая корзина -->
                 <Label Text="Корзина пуста"
                        FontSize="18"
                        HorizontalOptions="Center"
+                       TextColor="#888"
                        IsVisible="{Binding HasItems, Converter={StaticResource InverseBooleanConverter}}" />
 
-                <!-- Список товаров -->
-                <CollectionView ItemsSource="{Binding CartItems}"
-                                IsVisible="{Binding HasItems}">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Frame CornerRadius="10" BackgroundColor="#fffbe6" Padding="15">
-                                <Grid ColumnDefinitions="*, Auto">
-                                    <VerticalStackLayout>
-                                        <Label Text="{Binding Product.Name}"
-                                               FontSize="18"
-                                               FontAttributes="Bold" />
-                                        <Label Text="{Binding Quantity, StringFormat='Количество: {0}'}"/>
-                                        <Label Text="{Binding Product.Price, StringFormat='Цена за шт: {0}₽'}"/>
-                                        <Label Text="{Binding TotalPrice, StringFormat='Сумма: {0}₽'}"
-                                               FontAttributes="Italic"/>
-                                    </VerticalStackLayout>
-                                    <Button Text="Удалить"
-                                            Command="{Binding BindingContext.RemoveCommand, Source={x:Reference PageRef}}"
-                                            CommandParameter="{Binding .}"
-                                            TextColor="Red"
-                                            BackgroundColor="Transparent"
-                                            Grid.Column="1"/>
-                                </Grid>
-                            </Frame>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                <!-- Товары в корзине -->
+                <Frame BackgroundColor="White"
+                       CornerRadius="20"
+                       Padding="16"
+                       HasShadow="True"
+                       IsVisible="{Binding HasItems}">
+                    <VerticalStackLayout Spacing="20">
+                        <CollectionView ItemsSource="{Binding CartItems}" SelectionMode="None">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,0,0,16"
+                                          ColumnDefinitions="60,*,Auto" 
+                                          ColumnSpacing="15">
 
-                <!-- Итоговая сумма -->
-                <Label Text="{Binding TotalPrice, StringFormat='Итого: {0}₽'}"
-                       FontSize="20"
-                       FontAttributes="Bold"
-                       TextColor="#222"
-                       HorizontalOptions="End"
-                       IsVisible="{Binding HasItems}" />
+                                        <!-- Фото -->
+                                        <Image Source="{Binding Product.Image}" 
+                                               WidthRequest="60"
+                                               HeightRequest="60"
+                                               Aspect="AspectFill"
+                                               VerticalOptions="Center"/>
+
+                                        <!-- Название и цена -->
+                                        <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                                            <Label Text="{Binding Product.Name}"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#1B1B1B" />
+            
+                                            <!-- Кол-во × цена -->
+                                            <Label FontSize="14">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="{Binding Quantity}" TextColor="#777"/>
+                                                        <Span Text=" × " TextColor="#777"/>
+                                                        <Span Text="{Binding Product.Price}" TextColor="#777"/>
+                                                        <Span Text=" ₽" TextColor="#777"/>
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                        </VerticalStackLayout>
+
+                                        <!-- Итоговая цена позиции -->
+                                        <Label Text="{Binding TotalPrice, StringFormat='{0} ₽'}"
+                                               Grid.Column="2"
+                                               VerticalOptions="Center"
+                                               FontSize="16"
+                                               TextColor="#1B1B1B"
+                                               FontAttributes="Bold" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <!-- Разделитель -->
+                        <BoxView HeightRequest="1" Color="#DDD" />
+
+                        <!-- Итого -->
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Итого"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="#1B1B1B" />
+                            <Label Text="{Binding CartTotalPrice, StringFormat='{0} ₽'}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="#1B1B1B"
+                                   HorizontalOptions="End"
+                                   Grid.Column="1"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Нижняя фиксированная кнопка -->
+        <!-- Кнопка снизу -->
         <Button Text="Оформить подписку"
                 Grid.Row="1"
-                Margin="0,10,0,0"
-                BackgroundColor="#007AFF"
-                TextColor="White"
+                FontSize="18"
                 FontAttributes="Bold"
+                CornerRadius="12"
+                BackgroundColor="#D67A33"
+                TextColor="White"
+                HeightRequest="56"
                 Command="{Binding SubscribeCommand}"
                 IsVisible="{Binding HasItems}" />
-        
     </Grid>
-    
 </ContentPage>
