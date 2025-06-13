@@ -76,6 +76,8 @@ public class ProductsCatalogViewModel : INotifyPropertyChanged
 
     public ICommand LoadCommand { get; }
     public ICommand AddCommand { get; }
+    
+    public ICommand ClosePopupCommand { get; }
     public ICommand ConfirmCommand { get; }
     public ICommand IncreaseCommand { get; }
     public ICommand DecreaseCommand { get; }
@@ -87,6 +89,7 @@ public class ProductsCatalogViewModel : INotifyPropertyChanged
         
         LoadCommand = new Command(async () => await LoadProducts());
         AddCommand = new Command<Product>(ShowPopup);
+        ClosePopupCommand = new Command(() => IsPopupVisible = false);
         ConfirmCommand = new Command(ConfirmQuantity);
         IncreaseCommand = new Command(() => Quantity++);
         DecreaseCommand = new Command(() => Quantity--);

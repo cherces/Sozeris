@@ -2,8 +2,122 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Sozeris.Pages.UserProfilePage">
+             x:Class="Sozeris.Pages.UserProfilePage"
+             BackgroundColor="#F0EFEA">
+    
     <ContentPage.Content>
+        
+        <Grid Padding="24">
+
+            <ScrollView>
+                <VerticalStackLayout Spacing="24">
+
+                    <Label Text="Профиль"
+                           FontSize="28"
+                           FontAttributes="Bold"
+                           TextColor="#2C1B12"
+                           HorizontalOptions="Center" />
+
+                    <!-- Информация пользователя -->
+                    <Frame BackgroundColor="#FAFAF8"
+                           CornerRadius="16"
+                           Padding="20"
+                           HasShadow="True">
+
+                        <VerticalStackLayout Spacing="12">
+                            <Label Text="{Binding User.Login}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="#333" />
+
+                            <Label Text="{Binding User.Address}"
+                                   FontSize="16"
+                                   TextColor="#666" />
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- Кнопки меню -->
+                    <VerticalStackLayout Spacing="16">
+
+                        <Button Text="Изменить адрес доставки"
+                                FontSize="16"
+                                CornerRadius="12"
+                                BackgroundColor="White"
+                                TextColor="#2C1B12"
+                                Command="{Binding AddressTappedCommand}" />
+
+                        <Button Text="История покупок"
+                                FontSize="16"
+                                CornerRadius="12"
+                                BackgroundColor="White"
+                                TextColor="#2C1B12"
+                                Command="{Binding HistoryTappedCommand}" />
+
+                        <BoxView HeightRequest="1" Color="#DDD" />
+
+                        <Button Text="Выйти"
+                                FontSize="16"
+                                CornerRadius="12"
+                                BackgroundColor="#D67A33"
+                                TextColor="White"
+                                Command="{Binding LogoutCommand}" />
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- Всплывающее окно редактирования адреса -->
+            <ContentView IsVisible="{Binding IsEditingAddress}"
+                         BackgroundColor="#00000040"
+                         Padding="20"
+                         InputTransparent="False">
+
+                <Grid HorizontalOptions="Center"
+                      VerticalOptions="Center">
+
+                    <Frame BackgroundColor="White"
+                           CornerRadius="20"
+                           Padding="20"
+                           WidthRequest="300"
+                           HasShadow="True">
+
+                        <VerticalStackLayout Spacing="16">
+
+                            <Label Text="Изменение адреса"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="#333"
+                                   HorizontalOptions="Center" />
+
+                            <Entry Placeholder="Введите новый адрес"
+                                   Text="{Binding EditableAddress}"
+                                   FontSize="16"
+                                   TextColor="#333"
+                                   BackgroundColor="#F0F0F0"
+                                   HeightRequest="40"/>
+
+                            <HorizontalStackLayout Spacing="12"
+                                                   HorizontalOptions="End">
+                                <Button Text="Отмена"
+                                        Command="{Binding CancelEditAddressCommand}"
+                                        BackgroundColor="#CCCCCC"
+                                        TextColor="#333"
+                                        CornerRadius="10"
+                                        WidthRequest="100" />
+
+                                <Button Text="Сохранить"
+                                        Command="{Binding SaveAddressCommand}"
+                                        BackgroundColor="#D67A33"
+                                        TextColor="White"
+                                        CornerRadius="10"
+                                        WidthRequest="100" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+
+                    </Frame>
+                </Grid>
+            </ContentView>
+
+        </Grid>
         
     </ContentPage.Content>
 </ContentPage>

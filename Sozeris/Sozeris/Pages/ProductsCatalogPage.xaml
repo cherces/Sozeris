@@ -102,18 +102,23 @@
         <!-- Всплывающее окно выбора количества -->
         <ContentView IsVisible="{Binding IsPopupVisible}"
                      BackgroundColor="#00000080"
-                     Padding="20">
+                     Padding="10">
 
             <Frame BackgroundColor="#fffbe6"
                    CornerRadius="20"
-                   Padding="20"
+                   Padding="0"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"
                    WidthRequest="300">
 
                 <Grid>
+                    <!-- 2 строки: одна под крестик, вторая — всё остальное -->
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-                    <!-- Кнопка закрытия в верхнем правом углу -->
+                    <!-- Кнопка закрытия -->
                     <Button Text="✕"
                             FontSize="18"
                             BackgroundColor="Transparent"
@@ -123,9 +128,11 @@
                             WidthRequest="40"
                             HeightRequest="40"
                             Command="{Binding ClosePopupCommand}"
-                            Padding="0"/>
+                            Padding="0"
+                            Margin="5"/>
 
-                    <VerticalStackLayout Spacing="15" Margin="0,40,0,0">
+                    <!-- Содержимое попапа -->
+                    <VerticalStackLayout Grid.Row="1" Spacing="15" Padding="20">
 
                         <Label Text="{Binding SelectedProduct.Name}"
                                FontSize="20"
@@ -148,6 +155,7 @@
                     </VerticalStackLayout>
                 </Grid>
             </Frame>
+            
         </ContentView>
 
         <!-- Всплывающее уведомление (toast) -->
