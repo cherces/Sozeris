@@ -9,5 +9,6 @@ public static class ViewModelRegistration
         services.AddSingleton<LoginViewModel>();
         services.AddTransient<ProductsCatalogViewModel>();
         services.AddSingleton<CartViewModel>();
+        services.AddTransient<UserProfileViewModel>();
     }
 }

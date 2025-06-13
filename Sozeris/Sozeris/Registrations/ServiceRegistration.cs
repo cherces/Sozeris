@@ -12,5 +12,6 @@ public static class ServiceRegistration
         services.AddSingleton<IUserSessionService, UserSessionService>();
         services.AddSingleton<IProductService, ProductService>();
         services.AddSingleton<ICartService, CartService>();
+        services.AddSingleton<IUserService, UserService>();
     }
 }

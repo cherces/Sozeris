@@ -42,11 +42,22 @@
                                           ColumnSpacing="15">
 
                                         <!-- Фото -->
-                                        <Image Source="{Binding Product.Image}" 
+                                        <Frame CornerRadius="16"
+                                               Padding="0"
+                                               HasShadow="False"
+                                               IsClippedToBounds="True"
+                                               BackgroundColor="#F4F4F4"
                                                WidthRequest="60"
                                                HeightRequest="60"
-                                               Aspect="AspectFill"
-                                               VerticalOptions="Center"/>
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="Center">
+                                            <Image Source="{Binding Product.Image}"
+                                                   Aspect="AspectFill"
+                                                   WidthRequest="60"
+                                                   HeightRequest="60"
+                                                   VerticalOptions="Fill"
+                                                   HorizontalOptions="Fill"/>
+                                        </Frame>
 
                                         <!-- Название и цена -->
                                         <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
@@ -66,15 +77,36 @@
                                                     </FormattedString>
                                                 </Label.FormattedText>
                                             </Label>
+                                            
+                                            <!-- Итоговая цена -->
+                                            <Label Text="{Binding TotalPrice, StringFormat='{0} ₽'}"
+                                                   FontSize="16"
+                                                   TextColor="#1B1B1B"
+                                                   FontAttributes="Bold"
+                                                   Margin="0,4,0,0" />
                                         </VerticalStackLayout>
-
-                                        <!-- Итоговая цена позиции -->
-                                        <Label Text="{Binding TotalPrice, StringFormat='{0} ₽'}"
-                                               Grid.Column="2"
+                                        
+                                        <!-- Кнопка удаления -->
+                                        <Frame Grid.Column="2"
+                                               WidthRequest="32"
+                                               HeightRequest="32"
+                                               Padding="4"
+                                               CornerRadius="16"
+                                               BackgroundColor="#FFF0F0"
                                                VerticalOptions="Center"
-                                               FontSize="16"
-                                               TextColor="#1B1B1B"
-                                               FontAttributes="Bold" />
+                                               HorizontalOptions="End">
+
+                                            <ImageButton Source="trash_icon.png"
+                                                         BackgroundColor="Transparent"
+                                                         WidthRequest="24"
+                                                         HeightRequest="24"
+                                                         Aspect="AspectFit"
+                                                         Padding="0"
+                                                         HorizontalOptions="Center"
+                                                         VerticalOptions="Center"
+                                                         Command="{Binding BindingContext.RemoveCommand, Source={x:Reference PageRef}}"
+                                                         CommandParameter="{Binding}" />
+                                        </Frame>
                                     </Grid>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
