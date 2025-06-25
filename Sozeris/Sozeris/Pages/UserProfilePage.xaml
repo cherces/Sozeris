@@ -51,7 +51,7 @@
                                 CornerRadius="12"
                                 BackgroundColor="White"
                                 TextColor="#2C1B12"
-                                Command="{Binding HistoryTappedCommand}" />
+                                Command="{Binding SubscriptionHistoryTappedCommand}" />
 
                         <BoxView HeightRequest="1" Color="#DDD" />
 
@@ -117,6 +117,123 @@
                 </Grid>
             </ContentView>
 
+            <!-- Всплывающее окно истории покупок -->
+            <ContentView IsVisible="{Binding IsSubscriptionHistoryVisible}"
+                         BackgroundColor="#00000040"
+                         Padding="20"
+                         InputTransparent="False">
+
+                <Grid>
+                    <Frame BackgroundColor="White"
+                           CornerRadius="20"
+                           Padding="20"
+                           HasShadow="True"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           MaximumWidthRequest="600">
+
+                        <Grid RowSpacing="12">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Заголовок -->
+                            <Grid>
+                                <Label Text="История покупок"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="#333"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center" />
+
+                                <Button Text="✕"
+                                        Command="{Binding CloseSubscriptionHistoryCommand}"
+                                        BackgroundColor="Transparent"
+                                        TextColor="#333"
+                                        FontSize="18"
+                                        HorizontalOptions="End"
+                                        VerticalOptions="Start"/>
+                            </Grid>
+
+                            <!-- Прокручиваемая часть -->
+                            <ScrollView Grid.Row="1">
+                                <VerticalStackLayout Spacing="20">
+                                    <CollectionView ItemsSource="{Binding Subscriptions}"
+                                                    Margin="0">
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Frame BackgroundColor="#F9F9F9"
+                                                       CornerRadius="12"
+                                                       Padding="14"
+                                                       Margin="0,0,0,10"
+                                                       HasShadow="False">
+
+                                                    <VerticalStackLayout Spacing="8">
+                                                        <!-- Заголовок подписки -->
+                                                        <Label Text="{Binding Id, StringFormat='Подписка №{0}'}"
+                                                               FontSize="15"
+                                                               FontAttributes="Bold"
+                                                               TextColor="#2C1B12" />
+
+                                                        <Label FontSize="13"
+                                                               TextColor="#444">
+                                                            <Label.FormattedText>
+                                                                <FormattedString>
+                                                                    <Span Text="{Binding StartDate, StringFormat='с {0:dd.MM.yyyy}'}"/>
+                                                                    <Span Text=" по " />
+                                                                    <Span Text="{Binding EndDate, StringFormat='{0:dd.MM.yyyy}'}"/>
+                                                                </FormattedString>
+                                                            </Label.FormattedText>
+                                                        </Label>
+
+                                                        <Label Text="{Binding Price, StringFormat='Итого: {0} ₽'}"
+                                                               FontSize="14"
+                                                               FontAttributes="Bold"
+                                                               TextColor="#D67A33" />
+
+                                                        <!-- Список заказов -->
+                                                        <CollectionView ItemsSource="{Binding Orders}"
+                                                                        Margin="0">
+                                                            <CollectionView.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Frame BackgroundColor="White"
+                                                                           CornerRadius="8"
+                                                                           Padding="10"
+                                                                           Margin="0,5,0,0"
+                                                                           HasShadow="False">
+
+                                                                        <VerticalStackLayout Spacing="4">
+                                                                            <Label Text="{Binding Product.Name}"
+                                                                                   FontSize="13"
+                                                                                   FontAttributes="Bold"
+                                                                                   TextColor="#333"/>
+
+                                                                            <HorizontalStackLayout Spacing="10">
+                                                                                <Label Text="{Binding Quantity, StringFormat='Кол-во: {0}'}"
+                                                                                       FontSize="12"
+                                                                                       TextColor="#666"/>
+                                                                                <Label Text="{Binding Price, StringFormat='Сумма: {0} ₽'}"
+                                                                                       FontSize="12"
+                                                                                       TextColor="#666"/>
+                                                                            </HorizontalStackLayout>
+                                                                        </VerticalStackLayout>
+                                                                    </Frame>
+                                                                </DataTemplate>
+                                                            </CollectionView.ItemTemplate>
+                                                        </CollectionView>
+
+                                                    </VerticalStackLayout>
+                                                </Frame>
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+                                </VerticalStackLayout>
+                            </ScrollView>
+                        </Grid>
+                    </Frame>
+                </Grid>
+            </ContentView>
         </Grid>
         
     </ContentPage.Content>

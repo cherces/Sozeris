@@ -66,7 +66,7 @@ public class MenuConfigProvider
         {
             new MenuItemConfig
             {
-                Title = "Мои подписки",
+                Title = "История доставок",
                 PageType = typeof(UserSubscriptionPage),
                 Route = "subscriptions",
                 Order = 2
