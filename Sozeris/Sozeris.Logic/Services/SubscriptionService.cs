@@ -44,6 +44,7 @@ public class SubscriptionService : ISubscriptionService
                 Id = 345634,
                 StartDate = DateTime.UtcNow.AddMonths(-3),
                 EndDate = DateTime.UtcNow.AddMonths(3),
+                PurchaseDate = DateTime.UtcNow.AddMonths(-3),
                 IsActive = true,
                 Price = 234,
                 Orders = new List<Order>
@@ -69,6 +70,7 @@ public class SubscriptionService : ISubscriptionService
                 Id = 227543,
                 StartDate = DateTime.UtcNow.AddYears(-1),
                 EndDate = DateTime.UtcNow.AddMonths(-6),
+                PurchaseDate = DateTime.UtcNow.AddMonths(-3),
                 IsActive = false,
                 Price = 534,
                 Orders = new List<Order>
@@ -87,6 +89,7 @@ public class SubscriptionService : ISubscriptionService
                 Id = 646325,
                 StartDate = DateTime.UtcNow.AddYears(-1),
                 EndDate = DateTime.UtcNow.AddMonths(-6),
+                PurchaseDate = DateTime.UtcNow.AddMonths(-3),
                 IsActive = false,
                 Price = 534,
                 Orders = new List<Order>
@@ -126,6 +129,7 @@ public class SubscriptionService : ISubscriptionService
                 Id = 375544,
                 StartDate = DateTime.UtcNow.AddYears(-1),
                 EndDate = DateTime.UtcNow.AddMonths(-6),
+                PurchaseDate = DateTime.UtcNow.AddMonths(-3),
                 IsActive = false,
                 Price = 534,
                 Orders = new List<Order>

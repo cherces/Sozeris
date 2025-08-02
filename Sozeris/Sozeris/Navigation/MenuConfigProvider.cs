@@ -67,7 +67,7 @@ public class MenuConfigProvider
             new MenuItemConfig
             {
                 Title = "История доставок",
-                PageType = typeof(UserSubscriptionPage),
+                PageType = typeof(DeliveryHistoryPage),
                 Route = "subscriptions",
                 Order = 2
             },
