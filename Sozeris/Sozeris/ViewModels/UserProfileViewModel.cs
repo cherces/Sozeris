@@ -5,6 +5,7 @@ using Sozeris.Logic.Services.Interfaces;
 using Sozeris.Logic.Services;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Sozeris.Pages;
 
 namespace Sozeris.ViewModels;
 
@@ -40,8 +41,7 @@ public class UserProfileViewModel : INotifyPropertyChanged
     }
 
     public ICommand AddressTappedCommand { get; }
-    public ICommand SubscriptionHistoryTappedCommand { get; }
-    public ICommand CloseSubscriptionHistoryCommand { get; }
+    public ICommand NavigateToSubscriptionPageCommand { get; }
     public ICommand CancelEditAddressCommand { get; }
     public ICommand SaveAddressCommand { get; }
     public ICommand LogoutCommand { get; }
@@ -56,14 +56,13 @@ public class UserProfileViewModel : INotifyPropertyChanged
         IsSubscriptionHistoryVisible = false;
         
         AddressTappedCommand = new Command(OnAddressTapped);
-        SubscriptionHistoryTappedCommand = new Command(OnSubscriptionHistoryTapped);
+        NavigateToSubscriptionPageCommand = new Command(OnSubscriptionTapped);
         CancelEditAddressCommand = new Command(() => IsEditingAddress = false);
         SaveAddressCommand = new Command(() =>
         {
             User.Address = EditableAddress;
             IsEditingAddress = false;
         });
-        CloseSubscriptionHistoryCommand = new Command(() => IsSubscriptionHistoryVisible = false);
         LogoutCommand = new Command(OnLogout);
     }
 
@@ -72,15 +71,11 @@ public class UserProfileViewModel : INotifyPropertyChanged
         IsEditingAddress = true;
     }
 
-    private async void OnSubscriptionHistoryTapped()
+    private async void OnSubscriptionTapped()
     {
-        IsSubscriptionHistoryVisible = true;
         var userId = User.Id;
-
-        Subscriptions.Clear();
-        var result = await _subscriptionService.GetSubscriptionsByUserIdAsync(userId);
-        foreach (var subscription in result)
-            Subscriptions.Add(subscription);
+        var subs = await _subscriptionService.GetSubscriptionsByUserIdAsync(userId);
+        await Shell.Current.Navigation.PushAsync(new UserSubscriptionPage(subs));
     }
     
     private void OnLogout()

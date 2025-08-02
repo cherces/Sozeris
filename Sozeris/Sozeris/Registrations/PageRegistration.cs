@@ -15,5 +15,6 @@ public static class PageRegistration
         services.AddTransient<UserSubscriptionPage>();
         services.AddTransient<ProductsCatalogPage>();
         services.AddTransient<CartPage>();
+        services.AddTransient<DeliveryHistoryPage>();
     }
 }

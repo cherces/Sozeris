@@ -1,9 +1,71 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             x:Class="Sozeris.Pages.UserSubscriptionPage"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Sozeris.Pages.UserSubscriptionPage">
+             BackgroundColor="#F0EFEA"
+             Title="История покупок">
+
     <ContentPage.Content>
-        
+        <Grid Padding="16">
+            <VerticalStackLayout Spacing="12">
+
+                <!-- Назад -->
+                <Button Text="← Назад"
+                        HorizontalOptions="Start"
+                        BackgroundColor="Transparent"
+                        TextColor="#2C1B12"
+                        FontSize="16"
+                        Clicked="OnBackClicked" />
+
+                <CollectionView ItemsSource="{Binding Subscriptions}"
+                                SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Padding="16"
+                                   Margin="0,0,0,10"
+                                   CornerRadius="12"
+                                   BackgroundColor="White"
+                                   HasShadow="True">
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Text="{Binding Id, StringFormat='Подписка №{0}'}"
+                                           FontSize="15"
+                                           FontAttributes="Bold"
+                                           TextColor="#2C1B12" />
+
+                                    <Label FontSize="13"
+                                           TextColor="#666"
+                                           Text="{Binding PurchaseDate, StringFormat='Дата покупки: {0:dd.MM.yyyy}'}" />
+
+                                    <Label FontSize="13"
+                                           TextColor="#666">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding StartDate, StringFormat='с {0:dd.MM.yyyy}'}"/>
+                                                <Span Text=" по " />
+                                                <Span Text="{Binding EndDate, StringFormat='{0:dd.MM.yyyy}'}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                    <Label Text="{Binding Price, StringFormat='Сумма: {0} ₽'}"
+                                           FontSize="14"
+                                           TextColor="#D67A33" />
+
+                                    <Button Text="Подробнее"
+                                            FontSize="13"
+                                            Padding="6"
+                                            BackgroundColor="#D67A33"
+                                            TextColor="White"
+                                            Clicked="OnDetailsClicked"
+                                            CommandParameter="{Binding}" />
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

@@ -10,5 +10,6 @@ public static class ViewModelRegistration
         services.AddTransient<ProductsCatalogViewModel>();
         services.AddSingleton<CartViewModel>();
         services.AddTransient<UserProfileViewModel>();
+        services.AddTransient<DeliveryHistoryViewModel>();
     }
 }
