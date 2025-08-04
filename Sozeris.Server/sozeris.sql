@@ -9,7 +9,8 @@ ALTER TABLE "JwtRefreshTokens" OWNER TO postgres;
 CREATE TABLE "Products" (
     "Id" SERIAL PRIMARY KEY,
     "Name" VARCHAR(255) NOT NULL,
-    "Price" NUMERIC(10, 2) NOT NULL
+    "Price" NUMERIC(10, 2) NOT NULL,
+    "Image" BYTEA
 );
 
 ALTER TABLE "Products" OWNER TO postgres;
