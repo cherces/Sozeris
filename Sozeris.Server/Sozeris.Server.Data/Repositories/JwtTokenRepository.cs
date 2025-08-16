@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Sozeris.Server.Data.DbContext;
-using Sozeris.Server.Data.Repositories.Interfaces;
-using Sozeris.Server.Models.Entities;
+using Sozeris.Server.Domain.Entities;
+using Sozeris.Server.Domain.Interfaces.Repositories;
 
 namespace Sozeris.Server.Data.Repositories;
 

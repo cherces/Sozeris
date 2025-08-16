@@ -1,11 +1,12 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Sozeris.Server.Logic.Services.Interfaces;
-using Sozeris.Server.Models.DTO;
-using Sozeris.Server.Models.Entities;
+using Sozeris.Server.Api.DTO.Product;
+using Sozeris.Server.Domain.Entities;
+using Sozeris.Server.Domain.Interfaces.Services;
 
 namespace Sozeris.Server.Api.Controllers;
 
+[ApiController]
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
@@ -18,67 +19,52 @@ public class ProductsController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet("all")]
-    public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
+    [HttpGet]
+    public async Task<ActionResult<List<ProductResponseDTO>>> GetAllProducts()
     {
         var products = await _productService.GetAllProductsAsync();
-        var dtos = _mapper.Map<IEnumerable<ProductDTO>>(products);
         
-        return Ok(dtos);
+        return Ok(_mapper.Map<List<ProductResponseDTO>>(products));
     }
 
     [HttpGet("{productId}")]
-    public async Task<ActionResult<ProductDTO>> GetProductById(int productId)
+    public async Task<ActionResult<ProductResponseDTO>> GetProductById(int productId)
     {
         var product = await _productService.GetProductByIdAsync(productId);
-        
-        if (product == null)
-            return NotFound();
-
-        return Ok(_mapper.Map<ProductDTO>(product));
+        return product is null ? NotFound() : Ok(_mapper.Map<ProductResponseDTO>(product));
     }
 
     [HttpPost]
-    public async Task<ActionResult<ProductDTO>> AddProduct([FromBody] ProductDTO dto)
+    public async Task<ActionResult> CreateProduct([FromBody] ProductCreateDTO productDto)
     {
-        if (dto == null)
-            return BadRequest();
-
-        var product = _mapper.Map<Product>(dto);
-        var success = await _productService.AddProductAsync(product);
-
-        if (!success)
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        
+        var product = _mapper.Map<Product>(productDto);
+        var createdProduct = await _productService.AddProductAsync(product);
+        
+        if (createdProduct is null)
             return BadRequest("Product creation failed.");
 
-        return CreatedAtAction(nameof(GetProductById), new { productId = product.Id }, _mapper.Map<ProductDTO>(product));
+        return CreatedAtAction(nameof(GetProductById), new { productId = createdProduct.Id }, createdProduct);
     }
 
-    [HttpPut]
-    public async Task<ActionResult> UpdateProduct([FromBody] ProductDTO dto)
+    [HttpPut("{productId}")]
+    public async Task<ActionResult> UpdateProduct(int productId, [FromBody] ProductUpdateDTO productDto)
     {
-        if (dto == null)
-            return BadRequest();
-
-        var product = _mapper.Map<Product>(dto);
-        var success = await _productService.UpdateProductAsync(product);
-
-        if (!success)
-            return NotFound();
-
-        return NoContent();
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        
+        var product = _mapper.Map<Product>(productDto);
+        product.Id = productId;
+        
+        var success = await _productService.UpdateProductAsync(productId, product);
+        
+        return success ? NoContent() : NotFound();
     }
 
     [HttpDelete("{productId}")]
     public async Task<ActionResult> DeleteProductById(int productId)
     {
-        var product = await _productService.GetProductByIdAsync(productId);
-        if (product == null)
-            return NotFound();
-
         var success = await _productService.DeleteProductByIdAsync(productId);
-        if (!success)
-            return BadRequest("Product deletion failed.");
-
-        return NoContent();
+        return success ? NoContent() : NotFound();
     }
 }

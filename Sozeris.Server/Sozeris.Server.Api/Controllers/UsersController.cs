@@ -1,43 +1,47 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Sozeris.Server.Logic.Services.Interfaces;
-using Sozeris.Server.Models.DTO;
-using Sozeris.Server.Models.Entities;
+using Sozeris.Server.Api.DTO;
+using Sozeris.Server.Api.DTO.User;
+using Sozeris.Server.Domain.Entities;
+using Sozeris.Server.Domain.Interfaces.Services;
 
 namespace Sozeris.Server.Api.Controllers;
 
+[ApiController]
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IMapper _mapper;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService, IMapper mapper)
     {
         _userService = userService;
+        _mapper = mapper;
     }
     
     [HttpGet("all")]
-    public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers()
+    public async Task<ActionResult<List<UserResponseDTO>>> GetAllUsers()
     {
         var users = await _userService.GetAllUsersAsync();
         
-        return Ok(users);
+        return Ok(_mapper.Map<List<UserResponseDTO>>(users));
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<UserDTO>> GetUserById(int id)
+    public async Task<ActionResult<UserResponseDTO>> GetUserById(int id)
     {
         var user = await _userService.GetUserByIdAsync(id);
         
-        if (user == null) return NotFound();
-        
-        return Ok(user);
+        return user is null ? NotFound() : Ok(_mapper.Map<UserResponseDTO>(user));
     }
 
     [HttpPost]
-    public async Task<ActionResult<UserDTO>> CreateUser([FromBody] UserDTO? user)
+    public async Task<ActionResult<UserCreateDTO>> CreateUser([FromBody] UserCreateDTO userDto)
     {
-        if (user == null) return BadRequest();
-
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        
+        var user = _mapper.Map<User>(userDto);
         var success = await _userService.CreateUserAsync(user);
         
         if (!success) return BadRequest("User creation failed.");
@@ -46,15 +50,14 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<ActionResult> UpdateUser([FromBody] UserDTO? user)
+    public async Task<ActionResult> UpdateUser([FromBody] UserUpdateDTO userDto)
     {
-        if (user == null) return BadRequest();
-
-        var success = await _userService.UpdateUserAsync(user);
+        if (!ModelState.IsValid) return BadRequest(ModelState);
         
-        if (!success) return NotFound();
+        var user = _mapper.Map<User>(userDto);
+        var success = await _userService.UpdateUserAsync(user);
 
-        return NoContent();
+        return success ? NoContent() : NotFound();
     }
 
     [HttpDelete("{userId}")]

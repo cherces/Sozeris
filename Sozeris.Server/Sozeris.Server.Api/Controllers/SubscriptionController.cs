@@ -1,84 +1,56 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Sozeris.Server.Logic.Services.Interfaces;
-using Sozeris.Server.Models.DTO;
+using Sozeris.Server.Api.DTO.Subscription;
+using Sozeris.Server.Domain.Entities;
+using Sozeris.Server.Domain.Interfaces.Services;
 
 namespace Sozeris.Server.Api.Controllers;
 
+[ApiController]
 [Route("api/[controller]")]
 public class SubscriptionController : ControllerBase
 {
     private readonly ISubscriptionService _subscriptionService;
-
-    public SubscriptionController(ISubscriptionService subscriptionService)
+    private readonly IMapper _mapper;
+    
+    public SubscriptionController(ISubscriptionService subscriptionService, IMapper mapper)
     {
         _subscriptionService = subscriptionService;
+        _mapper = mapper;
     }
 
-    [HttpGet("all")]
-    public async Task<ActionResult<IEnumerable<SubscriptionDTO>>> GetAllSubscriptions()
+    [HttpGet]
+    public async Task<ActionResult<List<SubscriptionResponseDTO>>> GetAllSubscriptions()
     {
         var subscriptions = await _subscriptionService.GetAllSubscriptionsAsync();
         
-        return Ok(subscriptions);
+        return Ok(_mapper.Map<List<SubscriptionResponseDTO>>(subscriptions));
     }
 
     [HttpGet("{subscriptionId}")]
-    public async Task<ActionResult<SubscriptionDTO>> GetSubscriptionByIdAsync(int subscriptionId)
+    public async Task<ActionResult<SubscriptionResponseDTO>> GetSubscriptionByIdAsync(int subscriptionId)
     {
         var subscription = await _subscriptionService.GetSubscriptionByIdAsync(subscriptionId);
         
-        if (subscription == null) return NotFound();
-        
-        return Ok(subscription);
+        return subscription == null ? NotFound() : Ok(_mapper.Map<SubscriptionResponseDTO>(subscription));
     }
 
     [HttpGet("user/{userId}")]
-    public async Task<ActionResult<IEnumerable<SubscriptionDTO>>> GetSubscriptionsByUserIdAsync(int userId)
+    public async Task<ActionResult<List<SubscriptionResponseDTO>>> GetSubscriptionsByUserIdAsync(int userId)
     {
         var subscriptions = await _subscriptionService.GetSubscriptionsByUserIdAsync(userId);
         
-        return Ok(subscriptions);
-    }
-
-    [HttpGet("active/user/{userId}")]
-    public async Task<ActionResult<SubscriptionDTO?>> GetActiveSubscriptionByUserIdAsync(int userId)
-    {
-        var subscription = await _subscriptionService.GetActiveSubscriptionByUserIdAsync(userId);
-        
-        if (subscription == null) return NotFound();
-        
-        return Ok(subscription);
-    }
-
-    [HttpPut("{subscriptionId}")]
-    public async Task<ActionResult> RenewSubscriptionByIdAsync(int subscriptionId)
-    {
-        var success = await _subscriptionService.RenewSubscriptionByIdAsync(subscriptionId);
-
-        if (!success) return BadRequest("Subscription renew failed.");
-        
-        return NoContent();
+        return Ok(_mapper.Map<List<SubscriptionResponseDTO>>(subscriptions));
     }
 
     [HttpPost]
-    public async Task<ActionResult<SubscriptionDTO>> AddSubscriptionAsync([FromBody] SubscriptionDTO? subscriptionDto)
+    public async Task<ActionResult<SubscriptionCreateDTO>> AddSubscriptionAsync([FromBody] SubscriptionCreateDTO subscriptionDto)
     {
-        if (subscriptionDto is null) return BadRequest();
+        if (!ModelState.IsValid) return BadRequest(ModelState);
         
-        var success = await _subscriptionService.AddSubscriptionAsync(subscriptionDto);
+        var subscription = _mapper.Map<Subscription>(subscriptionDto);
+        var createdSubscription = await _subscriptionService.AddSubscriptionAsync(subscription);
         
-        if (!success) return BadRequest("Subscription creation failed.");
-        
-        return CreatedAtAction(nameof(GetSubscriptionByIdAsync), new { subscriptionId = subscriptionDto.Id }, subscriptionDto);
-    }
-
-    [HttpDelete("{subscriptionId}")]
-    public async Task<ActionResult> DeleteSubscriptionByIdAsync(int subscriptionId)
-    {
-        var success = await _subscriptionService.DeleteSubscriptionByIdAsync(subscriptionId);
-        
-        if (!success) return BadRequest("Subscription deletion failed.");
-        
-        return NoContent();
+        return CreatedAtAction(nameof(GetSubscriptionByIdAsync), new { subscriptionId = createdSubscription.Id }, createdSubscription);
     }
 }

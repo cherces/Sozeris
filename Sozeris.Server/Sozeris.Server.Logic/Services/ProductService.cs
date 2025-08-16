@@ -1,6 +1,6 @@
-using Sozeris.Server.Data.Repositories.Interfaces;
-using Sozeris.Server.Logic.Services.Interfaces;
-using Sozeris.Server.Models.Entities;
+using Sozeris.Server.Domain.Entities;
+using Sozeris.Server.Domain.Interfaces.Repositories;
+using Sozeris.Server.Domain.Interfaces.Services;
 
 namespace Sozeris.Server.Logic.Services;
 
@@ -13,7 +13,7 @@ public class ProductService : IProductService
         _productRepository = productRepository;
     }
 
-    public async Task<IEnumerable<Product>> GetAllProductsAsync()
+    public async Task<IReadOnlyList<Product>> GetAllProductsAsync()
     {
         var products = await _productRepository.GetAllProductsAsync();
         
@@ -27,14 +27,21 @@ public class ProductService : IProductService
         return product;
     }
 
-    public async Task<bool> AddProductAsync(Product product)
+    public async Task<Product?> AddProductAsync(Product product)
     {
-        return await _productRepository.AddProductAsync(product);
+        var created = await _productRepository.AddProductAsync(product);
+        
+        return created;
     }
 
-    public async Task<bool> UpdateProductAsync(Product product)
+    public async Task<bool> UpdateProductAsync(int productId, Product product)
     {
-        return await _productRepository.UpdateProductAsync(product);
+        var existing = await _productRepository.GetProductByIdAsync(productId);
+        if (existing is null)
+            return false;
+
+        existing.CloneFrom(product);
+        return await _productRepository.UpdateProductAsync(existing);
     }
 
     public async Task<bool> DeleteProductByIdAsync(int productId)
