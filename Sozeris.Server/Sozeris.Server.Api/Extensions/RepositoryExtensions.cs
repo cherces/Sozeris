@@ -1,5 +1,5 @@
 using Sozeris.Server.Data.Repositories;
-using Sozeris.Server.Data.Repositories.Interfaces;
+using Sozeris.Server.Domain.Interfaces.Repositories;
 
 namespace Sozeris.Server.Api.Extensions;
 

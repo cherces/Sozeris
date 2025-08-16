@@ -1,29 +1,24 @@
 using System.Security.Cryptography;
-using AutoMapper;
-using Microsoft.AspNetCore.Builder;
-using Sozeris.Server.Data.Repositories.Interfaces;
-using Sozeris.Server.Logic.Services.Interfaces;
-using Sozeris.Server.Models.DTO;
-using Sozeris.Server.Models.Entities;
+using Sozeris.Server.Domain.Entities;
+using Sozeris.Server.Domain.Interfaces.Repositories;
+using Sozeris.Server.Domain.Interfaces.Services;
 
 namespace Sozeris.Server.Logic.Services;
 
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
-    private readonly IMapper _mapper;
 
-    public UserService(IUserRepository userRepository, IMapper mapper)
+    public UserService(IUserRepository userRepository)
     {
         _userRepository = userRepository;
-        _mapper = mapper;
     }
 
-    public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
+    public async Task<IReadOnlyList<User>> GetAllUsersAsync()
     {
         var users = await _userRepository.GetAllUsersAsync();
         
-        return _mapper.Map<IEnumerable<UserDTO>>(users);
+        return users;
     }
 
     public async Task<User?> GetUserByIdAsync(int userId)
@@ -40,22 +35,18 @@ public class UserService : IUserService
         return user;
     }
     
-    public async Task<bool> CreateUserAsync(UserDTO userDto)
+    public async Task<bool> CreateUserAsync(User user)
     {
-        userDto.Password = HashPassword(userDto.Password);
-        
-        var user = _mapper.Map<User>(userDto);
+        user.Password = HashPassword(user.Password);
         
         return await _userRepository.CreateUserAsync(user);
     }
 
-    public async Task<bool> UpdateUserAsync(UserDTO user)
+    public async Task<bool> UpdateUserAsync(User user)
     {
         var oldUser = await _userRepository.GetUserByIdAsync(user.Id);
         
         if (oldUser == null) return false;
-        
-        _mapper.Map(user, oldUser);
         
         oldUser.Password = HashPassword(user.Password);
         
@@ -69,7 +60,6 @@ public class UserService : IUserService
     
     public string HashPassword(string password)
     {
-        // добавляем щепотку соли
         byte[] salt = new byte[16];
         using (var rng = new RNGCryptoServiceProvider())
         {

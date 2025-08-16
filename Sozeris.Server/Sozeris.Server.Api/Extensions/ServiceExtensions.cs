@@ -1,5 +1,5 @@
+using Sozeris.Server.Domain.Interfaces.Services;
 using Sozeris.Server.Logic.Services;
-using Sozeris.Server.Logic.Services.Interfaces;
 
 namespace Sozeris.Server.Api.Extensions;
 

@@ -1,0 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace Sozeris.Server.Domain.Entities;
+
+public class DeliveryHistory
+{
+    public int Id { get; set; }
+    public int SubsctiptionId { get; set; }
+    public DateTime DeliveryDate { get; set; }
+}

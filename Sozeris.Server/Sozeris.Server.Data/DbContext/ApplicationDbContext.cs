@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Sozeris.Server.Models.Entities;
+using Sozeris.Server.Domain.Entities;
 
 namespace Sozeris.Server.Data.DbContext;
 

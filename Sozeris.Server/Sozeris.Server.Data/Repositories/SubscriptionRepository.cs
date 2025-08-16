@@ -1,9 +1,7 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sozeris.Server.Data.DbContext;
-using Sozeris.Server.Data.Repositories.Interfaces;
-using Sozeris.Server.Models.DTO;
-using Sozeris.Server.Models.Entities;
+using Sozeris.Server.Domain.Entities;
+using Sozeris.Server.Domain.Interfaces.Repositories;
 
 namespace Sozeris.Server.Data.Repositories;
 
@@ -16,63 +14,44 @@ public class SubscriptionRepository : ISubscriptionRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Subscription>> GetAllSubscriptionsAsync()
+    public async Task<IReadOnlyList<Subscription>> GetAllSubscriptionsAsync()
     {
-        var subscriptions = await _context.Subscriptions.ToListAsync();
+        var subscriptions = await _context.Subscriptions
+            .Include(s=> s.Orders)
+            .ThenInclude(o=>o.Product)
+            .AsNoTracking()
+            .ToListAsync();
 
         return subscriptions;
     }
 
     public async Task<Subscription?> GetSubscriptionByIdAsync(int subscriptionId)
     {
-        var subscription = await _context.Subscriptions.FindAsync(subscriptionId);
+        var subscription = await _context.Subscriptions
+            .Include(s => s.Orders)
+            .ThenInclude(o => o.Product)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.Id == subscriptionId);
         
         return subscription;
     }
 
-    public async Task<IEnumerable<Subscription>> GetSubscriptionsByUserIdAsync(int userId)
-    {
-        var subscriptions = await _context.Subscriptions.Where(x => x.UserId == userId).ToListAsync();
-        
-        return subscriptions;
-    }
-
-    public async Task<Subscription?> GetActiveSubscriptionByUserIdAsync(int userId)
+    public async Task<IReadOnlyList<Subscription>> GetSubscriptionsByUserIdAsync(int userId)
     {
         var subscriptions = await _context.Subscriptions
-            .Where(x => x.UserId == userId && x.IsActive)
-            .FirstOrDefaultAsync();
+                .Include(s => s.Orders)
+                .ThenInclude(o => o.Product)
+                .Where(x => x.UserId == userId)
+                .AsNoTracking()
+                .ToListAsync();
 
         return subscriptions;
     }
 
-    public async Task<bool> RenewSubscriptionByIdAsync(int subscriptionId)
+    public async Task<Subscription> AddSubscriptionAsync(Subscription subscription)
     {
-        var subscription = await _context.Subscriptions.FindAsync(subscriptionId);
-        
-        if (subscription == null) return false;
-
-        //пока без логики
-        subscription.IsActive = true;
-        
-        return await _context.SaveChangesAsync() > 0;
-    }
-
-    public async Task<bool> AddSubscriptionAsync(Subscription subscription)
-    {
-        await _context.Subscriptions.AddAsync(subscription);
-        
-        return await _context.SaveChangesAsync() > 0;
-    }
-
-    public async Task<bool> DeleteSubscriptionByIdAsync(int subscriptionId)
-    {
-        var subscriptionToDelete = await _context.Subscriptions.FindAsync(subscriptionId);
-        
-        if (subscriptionToDelete == null) return false;
-        
-        _context.Subscriptions.Remove(subscriptionToDelete);
-        
-        return await _context.SaveChangesAsync() > 0;
+        _context.Subscriptions.Add(subscription);
+        await _context.SaveChangesAsync();
+        return subscription;
     }
 }

@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Sozeris.Server.Data.DbContext;
-using Sozeris.Server.Data.Repositories.Interfaces;
-using Sozeris.Server.Models.Entities;
+using Sozeris.Server.Domain.Entities;
+using Sozeris.Server.Domain.Interfaces.Repositories;
 
 namespace Sozeris.Server.Data.Repositories;
 
@@ -14,39 +14,41 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Product>> GetAllProductsAsync()
+    public async Task<IReadOnlyList<Product>> GetAllProductsAsync()
     {
-        var products = await _context.Products.ToListAsync();
-        
-        return products;
+        return await _context.Products.AsNoTracking().ToListAsync();
     }
 
     public async Task<Product?> GetProductByIdAsync(int productId)
     {
-        var product = await _context.Products.FindAsync(productId);
-        
-        return product;
+        return await _context.Products.FindAsync(productId);
     }
 
-    public async Task<bool> AddProductAsync(Product product)
+    public async Task<Product?> AddProductAsync(Product product)
     {
-        var newProduct = await _context.Products.AddAsync(product);
+        _context.Products.Add(product);
         
-        return await _context.SaveChangesAsync() > 0;
+        var saved = await _context.SaveChangesAsync() > 0;
+        
+        return saved ? product : null;
     }
 
     public async Task<bool> UpdateProductAsync(Product product)
     {
-        var oldProduct = await _context.Products.FindAsync(product.Id);
-        oldProduct ??= product;
-        _context.Products.Update(oldProduct);
+        _context.Products.Update(product);
+        
         return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> DeleteProductByIdAsync(int productId)
     {
         var oldProduct = await _context.Products.FindAsync(productId);
+        
+        if (oldProduct is null)
+            return false;
+        
         _context.Products.Remove(oldProduct);
+        
         return await _context.SaveChangesAsync() > 0;
     }
 }

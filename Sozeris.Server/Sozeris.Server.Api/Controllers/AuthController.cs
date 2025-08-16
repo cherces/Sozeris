@@ -1,11 +1,9 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Sozeris.Server.Data.Repositories;
-using Sozeris.Server.Data.Repositories.Interfaces;
-using Sozeris.Server.Logic.Services.Interfaces;
-using Sozeris.Server.Models.Commons;
-using Sozeris.Server.Models.DTO;
-using Sozeris.Server.Models.Entities;
+using Sozeris.Server.Domain.Commons;
+using Sozeris.Server.Domain.Interfaces.Repositories;
+using Sozeris.Server.Domain.Interfaces.Services;
 
 namespace Sozeris.Server.Api.Controllers;
 

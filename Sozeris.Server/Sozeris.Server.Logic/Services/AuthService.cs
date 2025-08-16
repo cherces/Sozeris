@@ -3,11 +3,10 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Sozeris.Server.Data.Repositories.Interfaces;
-using Sozeris.Server.Logic.Services.Interfaces;
-using Sozeris.Server.Models.Commons;
-using Sozeris.Server.Models.DTO;
-using Sozeris.Server.Models.Entities;
+using Sozeris.Server.Domain.Interfaces.Services;
+using Sozeris.Server.Domain.Commons;
+using Sozeris.Server.Domain.Entities;
+using Sozeris.Server.Domain.Interfaces.Repositories;
 
 namespace Sozeris.Server.Logic.Services;
 
@@ -27,7 +26,7 @@ public class AuthService : IAuthService
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Name),
+            new Claim(ClaimTypes.Name, user.Login),
             new Claim(ClaimTypes.Role, user.Role.ToString())
         };
 
