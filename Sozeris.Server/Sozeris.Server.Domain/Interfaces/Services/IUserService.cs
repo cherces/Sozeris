@@ -10,6 +10,4 @@ public interface IUserService
     public Task<bool> CreateUserAsync(User user);
     public Task<bool> UpdateUserAsync(User user);
     public Task<bool> DeleteUserByIdAsync(int userId);
-    public string HashPassword(string password);
-    public bool VerifyPassword(string password, string passwordHash);
 }

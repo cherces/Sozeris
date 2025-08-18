@@ -1,21 +1,20 @@
+using System.Reflection;
 using System.Text;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Sozeris.Server.Api.AutoMapping;
 using Sozeris.Server.Api.Extensions;
 using Sozeris.Server.Data.DbContext;
-using Sozeris.Server.Data.Repositories;
-using Sozeris.Server.Logic.Services;
-using Sozeris.Server.Models.AutoMapping;
-using Sozeris.Server.Models.Commons;
-using Sozeris.Server.Models.Entities;
+using Sozeris.Server.Domain.Commons;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -42,7 +41,7 @@ builder.Services.AddAuthentication(x =>
 builder.Services.AddApplicationRepositories();
 builder.Services.AddApplicationServices();
 
-builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
+builder.Services.AddAutoMapper(conf => { }, typeof(UserProfile));
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

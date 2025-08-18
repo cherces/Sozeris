@@ -14,14 +14,65 @@ public class AuthService : IAuthService
 {
     private readonly JwtSettings _jwtSettings;
     private readonly IJwtTokenRepository _jwtTokenRepository;
+    private readonly IUserRepository _userRepository;
 
-    public AuthService(IOptions<JwtSettings> jwtSettings, IJwtTokenRepository jwtTokenRepository)
+    public AuthService(IOptions<JwtSettings> jwtSettings, IJwtTokenRepository jwtTokenRepository, IUserRepository userRepository)
     {
         _jwtSettings = jwtSettings.Value;
         _jwtTokenRepository = jwtTokenRepository;
+        _userRepository = userRepository;
+    }
+
+    public async Task<(string AccessToken, string RefreshToken)> LoginAsync(string login, string password)
+    {
+        var user = await _userRepository.GetUserByLoginAsync(login);
+        
+        if (user is null || !PasswordHasher.VerifyPassword(password, user.Password))
+            throw new UnauthorizedAccessException("Неверный логин или пароль");
+
+        var accessToken = GenerateAccessToken(user);
+        var refreshToken = Guid.NewGuid().ToString();
+        
+        var refreshTokenEntity = new JwtRefreshToken
+        {
+            UserId = user.Id,
+            Token = refreshToken,
+            Created = DateTime.UtcNow,
+            Expires = DateTime.UtcNow.AddDays(35),
+            IsRevoked = false
+        };
+        
+        await _jwtTokenRepository.AddRefreshTokenAsync(refreshTokenEntity);
+        
+        return (accessToken, refreshToken);
+    }
+
+    public async Task<(string AccessToken, string RefreshToken)> RefreshTokenAsync(string refreshToken)
+    {
+        var tokenEntity = await _jwtTokenRepository.GetRefreshTokenAsync(refreshToken);
+        
+        if (tokenEntity is null) throw new UnauthorizedAccessException("Invalid refresh token");
+        
+        await _jwtTokenRepository.RevokeRefreshTokenAsync(refreshToken);
+        
+        var newAccessToken = GenerateAccessToken(tokenEntity.User);
+        var newRefreshToken = Guid.NewGuid().ToString();
+        
+        var newRefreshTokenEntity = new JwtRefreshToken
+        {
+            UserId = tokenEntity.User.Id,
+            Token = newRefreshToken,
+            Created = DateTime.UtcNow,
+            Expires = DateTime.UtcNow.AddDays(35),
+            IsRevoked = false
+        };
+        
+        await _jwtTokenRepository.AddRefreshTokenAsync(newRefreshTokenEntity);
+        
+        return (newAccessToken, newRefreshToken);
     }
     
-    public string GenerateAccessTokenAsync(User user)
+    private string GenerateAccessToken(User user)
     {
         var claims = new List<Claim>
         {
@@ -44,11 +95,9 @@ public class AuthService : IAuthService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public async Task<string> GenerateRefreshTokenAsync(int userId)
+    public async Task LogoutAsync(string refreshToken)
     {
-        var refreshToken = Guid.NewGuid().ToString();
-        await _jwtTokenRepository.AddRefreshTokenAsync(userId, refreshToken);
-        return refreshToken;
+        await _jwtTokenRepository.RevokeRefreshTokenAsync(refreshToken);
     }
 
     public ClaimsPrincipal? ValidateAccessTokenAsync(string token)
