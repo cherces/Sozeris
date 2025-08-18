@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+using Sozeris.Server.Domain.Commons;
 using Sozeris.Server.Domain.Entities;
 using Sozeris.Server.Domain.Interfaces.Repositories;
 using Sozeris.Server.Domain.Interfaces.Services;
@@ -37,7 +37,7 @@ public class UserService : IUserService
     
     public async Task<bool> CreateUserAsync(User user)
     {
-        user.Password = HashPassword(user.Password);
+        user.Password = PasswordHasher.HashPassword(user.Password);
         
         return await _userRepository.CreateUserAsync(user);
     }
@@ -48,7 +48,7 @@ public class UserService : IUserService
         
         if (oldUser == null) return false;
         
-        oldUser.Password = HashPassword(user.Password);
+        oldUser.Password = PasswordHasher.HashPassword(user.Password);
         
         return await _userRepository.UpdateUserAsync(oldUser);
     }
@@ -56,41 +56,5 @@ public class UserService : IUserService
     public async Task<bool> DeleteUserByIdAsync(int userId)
     {
         return await _userRepository.DeleteUserByIdAsync(userId);
-    }
-    
-    public string HashPassword(string password)
-    {
-        byte[] salt = new byte[16];
-        using (var rng = new RNGCryptoServiceProvider())
-        {
-            rng.GetBytes(salt);
-        }
-
-        var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000);
-        byte[] hash = pbkdf2.GetBytes(20);
-
-        byte[] hashBytes = new byte[36];
-        Array.Copy(salt, 0, hashBytes, 0, 16);
-        Array.Copy(hash, 0, hashBytes, 16, 20);
-
-        return Convert.ToBase64String(hashBytes);
-    }
-    public bool VerifyPassword(string password, string hashedPassword)
-    {
-        byte[] hashBytes = Convert.FromBase64String(hashedPassword);
-        byte[] salt = new byte[16];
-        Array.Copy(hashBytes, 0, salt, 0, 16);
-
-        var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000);
-        byte[] hash = pbkdf2.GetBytes(20);
-
-        for (int i = 0; i < 20; i++)
-        {
-            if (hashBytes[i + 16] != hash[i])
-            {
-                return false;
-            }
-        }
-        return true;
     }
 }

@@ -2,7 +2,8 @@ namespace Sozeris.Server.Domain.Enums;
 
 public enum UserRole
 {
-    User = 1,
+    User = 0,
+    Courier = 1,
     Admin = 2,
-    SuperAdmin = 3
+    Support = 3
 }

@@ -7,9 +7,12 @@ namespace Sozeris.Server.Domain.Entities;
 public class User
 {
     public int Id { get; set; }
-    public string Login { get; set; }
-    public string Password { get; set; }
-    public UserRole Role { get; set; }
-    public string Phone { get; set; }
-    public string Address { get; set; }
+    public string Login { get; set; } = String.Empty;
+    public string Password { get; set; } = String.Empty;
+    public string Salt { get; set; } = String.Empty;
+    public UserRole Role { get; set; } = UserRole.User;
+    public string Phone { get; set; } = String.Empty;
+    public string Address { get; set; } = String.Empty;
+
+    public List<JwtRefreshToken> JwtRefreshTokens { get; set; } = new();
 }
