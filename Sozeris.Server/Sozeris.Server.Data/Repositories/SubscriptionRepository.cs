@@ -17,8 +17,9 @@ public class SubscriptionRepository : ISubscriptionRepository
     public async Task<IReadOnlyList<Subscription>> GetAllSubscriptionsAsync()
     {
         var subscriptions = await _context.Subscriptions
+            .Include(u => u.User)
             .Include(s=> s.Orders)
-            .ThenInclude(o=>o.Product)
+                .ThenInclude(o=>o.Product)
             .AsNoTracking()
             .ToListAsync();
 
