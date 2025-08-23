@@ -11,5 +11,6 @@ public static class RepositoryExtensions
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
         services.AddScoped<IJwtTokenRepository, JwtTokenRepository>();
+        services.AddScoped<IDeliveryHistoryRepository, DeliveryHistoryRepository>();
     }
 }

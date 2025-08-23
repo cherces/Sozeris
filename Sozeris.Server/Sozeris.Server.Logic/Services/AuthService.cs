@@ -3,10 +3,12 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Sozeris.Server.Domain.Interfaces.Services;
+using Sozeris.Server.Logic.Interfaces.Services;
 using Sozeris.Server.Domain.Commons;
 using Sozeris.Server.Domain.Entities;
 using Sozeris.Server.Domain.Interfaces.Repositories;
+using Sozeris.Server.Domain.Models;
+using Sozeris.Server.Logic.Common;
 
 namespace Sozeris.Server.Logic.Services;
 
@@ -23,12 +25,12 @@ public class AuthService : IAuthService
         _userRepository = userRepository;
     }
 
-    public async Task<(string AccessToken, string RefreshToken)> LoginAsync(string login, string password)
+    public async Task<Result<AuthModel>> LoginAsync(string login, string password)
     {
         var user = await _userRepository.GetUserByLoginAsync(login);
         
         if (user is null || !PasswordHasher.VerifyPassword(password, user.Password))
-            throw new UnauthorizedAccessException("Неверный логин или пароль");
+            return Result<AuthModel>.Fail("Invalid login or password");
 
         var accessToken = GenerateAccessToken(user);
         var refreshToken = Guid.NewGuid().ToString();
@@ -43,15 +45,16 @@ public class AuthService : IAuthService
         };
         
         await _jwtTokenRepository.AddRefreshTokenAsync(refreshTokenEntity);
+        var auth = new AuthModel() { AccessToken = accessToken, RefreshToken = refreshToken };
         
-        return (accessToken, refreshToken);
+        return Result<AuthModel>.Ok(auth);
     }
 
-    public async Task<(string AccessToken, string RefreshToken)> RefreshTokenAsync(string refreshToken)
+    public async Task<Result<AuthModel>> RefreshTokenAsync(string refreshToken)
     {
         var tokenEntity = await _jwtTokenRepository.GetRefreshTokenAsync(refreshToken);
         
-        if (tokenEntity is null) throw new UnauthorizedAccessException("Invalid refresh token");
+        if (tokenEntity is null) return Result<AuthModel>.Fail("Invalid refresh token");
         
         await _jwtTokenRepository.RevokeRefreshTokenAsync(refreshToken);
         
@@ -68,8 +71,9 @@ public class AuthService : IAuthService
         };
         
         await _jwtTokenRepository.AddRefreshTokenAsync(newRefreshTokenEntity);
+        var auth = new AuthModel() { AccessToken = newAccessToken, RefreshToken = newRefreshToken };
         
-        return (newAccessToken, newRefreshToken);
+        return Result<AuthModel>.Ok(auth);
     }
     
     private string GenerateAccessToken(User user)
@@ -95,33 +99,10 @@ public class AuthService : IAuthService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public async Task LogoutAsync(string refreshToken)
+    public async Task<Result> LogoutAsync(string refreshToken)
     {
         await _jwtTokenRepository.RevokeRefreshTokenAsync(refreshToken);
-    }
 
-    public ClaimsPrincipal? ValidateAccessTokenAsync(string token)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(_jwtSettings.Key);
-
-        try
-        {
-            var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidIssuer = _jwtSettings.Issuer,
-                ValidAudience = _jwtSettings.Issuer
-            }, out var validatedToken);
-
-            return principal;
-        }
-        catch
-        {
-            return null;
-        }
+        return Result.Ok();
     }
 }

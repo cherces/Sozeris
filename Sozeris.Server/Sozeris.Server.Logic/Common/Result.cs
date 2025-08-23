@@ -17,13 +17,13 @@ public class Result
 
 public class Result<T> : Result
 {
-    public T Data { get; }
+    public T Value { get; }
 
-    public Result(bool success, T data, string errorMessage) : base(success, errorMessage)
+    private Result(bool success, T value, string errorMessage) : base(success, errorMessage)
     {
-        Data = data;
+        Value = value;
     }
 
     public static Result<T> Ok(T data) => new Result<T>(true, data, string.Empty);
-    public static new Result<T> Fail(string errorMessage) => new Result<T>(false, default!, errorMessage);
+    public new static Result<T> Fail(string errorMessage) => new Result<T>(false, default!, errorMessage);
 }

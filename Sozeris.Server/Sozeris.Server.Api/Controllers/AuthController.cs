@@ -1,44 +1,49 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Sozeris.Server.Api.DTO.Auth;
-using Sozeris.Server.Domain.Commons;
-using Sozeris.Server.Domain.Interfaces.Repositories;
-using Sozeris.Server.Domain.Interfaces.Services;
+using Sozeris.Server.Api.Models.Common;
+using Sozeris.Server.Logic.Interfaces.Services;
 
 namespace Sozeris.Server.Api.Controllers;
 
+[ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
-    private readonly IMapper _mapper;
 
-    public AuthController(IAuthService authService, IMapper mapper)
+    public AuthController(IAuthService authService)
     {
         _authService = authService;
-        _mapper = mapper;
     }
     
     [HttpPost("login")]
-    public async Task<ActionResult<JwtResponseDTO>> Login([FromBody] JwtRequestDTO jwtDto)
+    public async Task<ActionResult<ApiResponse<JwtResponseDTO>>> Login([FromBody] JwtRequestDTO jwtDto)
     {
-        var tokens = await _authService.LoginAsync(jwtDto.Login, jwtDto.Password);
+        var result = await _authService.LoginAsync(jwtDto.Login, jwtDto.Password);
+        if (!result.Success) return BadRequest(ApiResponse<object>.Fail(new Exception(result.ErrorMessage)));
         
-        return Ok(new JwtResponseDTO(tokens.AccessToken, tokens.RefreshToken));
+        return Ok(ApiResponse<JwtResponseDTO>.Ok(
+                new JwtResponseDTO(result.Value.AccessToken, result.Value.RefreshToken))
+        );
     }
     
     [HttpPost("logout")]
-    public async Task<ActionResult> Logout([FromBody] string refreshToken)
+    public async Task<ActionResult<ApiResponse>> Logout([FromBody] string refreshToken)
     {
-        await _authService.LogoutAsync(refreshToken);
-        return Ok(new { message = "Logout successful" });
+        var result = await _authService.LogoutAsync(refreshToken);
+        if (!result.Success) return BadRequest(ApiResponse.Fail(new Exception(result.ErrorMessage)));
+        
+        return Ok(ApiResponse.Ok());
     }
 
     [HttpPost("refreshToken")]
-    public async Task<ActionResult<JwtResponseDTO>> RefreshToken([FromBody] JwtRefreshDTO jwtRefreshDto)
+    public async Task<ActionResult<ApiResponse<JwtResponseDTO>>> RefreshToken([FromBody] JwtRefreshDTO jwtRefreshDto)
     {
-        var tokens = await _authService.RefreshTokenAsync(jwtRefreshDto.RefreshToken);
+        var result = await _authService.RefreshTokenAsync(jwtRefreshDto.RefreshToken);
+        if (!result.Success) return BadRequest(ApiResponse<object>.Fail(new Exception(result.ErrorMessage)));
         
-        return Ok(new JwtResponseDTO(tokens.AccessToken, tokens.RefreshToken));
+        return Ok(ApiResponse<JwtResponseDTO>.Ok(
+            new JwtResponseDTO(result.Value.AccessToken, result.Value.RefreshToken))
+        );
     }
 }

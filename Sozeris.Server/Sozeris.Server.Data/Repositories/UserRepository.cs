@@ -35,32 +35,23 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public async Task<bool> CreateUserAsync(User user)
+    public async Task<User> CreateUserAsync(User user)
     {
         await _context.Users.AddAsync(user);
-        
-        return await _context.SaveChangesAsync() > 0;
+        await _context.SaveChangesAsync();
+        return user;
     }
 
-    public async Task<bool> UpdateUserAsync(User user)
+    public async Task<User> UpdateUserAsync(User user)
     {
-        var oldUser = await _context.Users.FindAsync(user.Id);
-        
-        if (oldUser == null) return false;
-        
-        _context.Users.Update(oldUser);
-        
-        return await _context.SaveChangesAsync() > 0;
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+        return user;
     }
 
-    public async Task<bool> DeleteUserByIdAsync(int userId)
+    public async Task DeleteUserByIdAsync(User user)
     {
-        var userToDelete = await _context.Users.FindAsync(userId);
-        
-        if (userToDelete == null) return false;
-        
-        _context.Users.Remove(userToDelete);
-        
-        return await _context.SaveChangesAsync() > 0;
+        _context.Users.Remove(user);
+        await _context.SaveChangesAsync();
     }
 }

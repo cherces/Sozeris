@@ -14,12 +14,12 @@ public class DeliveryHistoryRepository : IDeliveryHistoryRepository
         _context = context;
     }
 
-    public async Task<IReadOnlyList<DeliveryHistory>> GetAllAsync()
+    public async Task<IReadOnlyList<DeliveryHistory>> GetAllDeliveryHistoryAsync()
     {
         return await _context.DeliveryHistory.AsNoTracking().ToListAsync();
     }
 
-    public async Task<IReadOnlyList<DeliveryHistory>> GetByDateAsync(DateTime date)
+    public async Task<IReadOnlyList<DeliveryHistory>> GetDeliveryHistoryByDateAsync(DateTime date)
     {
         return await _context.DeliveryHistory
             .Where(dh => dh.DeliveryDate == date)
@@ -27,20 +27,20 @@ public class DeliveryHistoryRepository : IDeliveryHistoryRepository
             .ToListAsync();
     }
 
-    public async Task<DeliveryHistory?> GetBySubscriptionAndDateAsync(int subscriptionId, DateTime date)
+    public async Task<DeliveryHistory?> GetDeliveryHistoryBySubscriptionAndDateAsync(int subscriptionId, DateTime date)
     {
         return await _context.DeliveryHistory
             .FirstOrDefaultAsync(dh => dh.SubscriptionId == subscriptionId && dh.DeliveryDate == date);
     }
 
-    public async Task<DeliveryHistory> AddAsync(DeliveryHistory deliveryHistory)
+    public async Task<DeliveryHistory> AddDeliveryHistoryAsync(DeliveryHistory deliveryHistory)
     {
         _context.DeliveryHistory.Add(deliveryHistory);
         await _context.SaveChangesAsync();
         return deliveryHistory;
     }
 
-    public async Task<DeliveryHistory> UpdateAsync(DeliveryHistory deliveryHistory)
+    public async Task<DeliveryHistory> UpdateDeliveryHistoryAsync(DeliveryHistory deliveryHistory)
     {
         _context.DeliveryHistory.Update(deliveryHistory);
         await _context.SaveChangesAsync();

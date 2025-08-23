@@ -1,6 +1,7 @@
 using Sozeris.Server.Domain.Entities;
 using Sozeris.Server.Domain.Interfaces.Repositories;
-using Sozeris.Server.Domain.Interfaces.Services;
+using Sozeris.Server.Logic.Common;
+using Sozeris.Server.Logic.Interfaces.Services;
 
 namespace Sozeris.Server.Logic.Services;
 
@@ -20,11 +21,12 @@ public class SubscriptionService : ISubscriptionService
         return subscriptions;
     }
 
-    public async Task<Subscription?> GetSubscriptionByIdAsync(int subscriptionId)
+    public async Task<Result<Subscription>> GetSubscriptionByIdAsync(int subscriptionId)
     {
         var subscription = await _subscriptionRepository.GetSubscriptionByIdAsync(subscriptionId);
+        if (subscription == null) return Result<Subscription>.Fail("Subscription not found");
         
-        return subscription;
+        return Result<Subscription>.Ok(subscription);
     }
 
     public async Task<IReadOnlyList<Subscription>> GetSubscriptionsByUserIdAsync(int userId)
@@ -34,9 +36,10 @@ public class SubscriptionService : ISubscriptionService
         return subscriptions;
     }
 
-    public async Task<Subscription> AddSubscriptionAsync(Subscription subscription)
+    public async Task<Result<Subscription>> AddSubscriptionAsync(Subscription subscription)
     {
         await _subscriptionRepository.AddSubscriptionAsync(subscription);
-        return subscription;
+        
+        return Result<Subscription>.Ok(subscription);
     }
 }

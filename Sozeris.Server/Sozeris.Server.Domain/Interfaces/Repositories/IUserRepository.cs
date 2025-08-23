@@ -7,7 +7,7 @@ public interface IUserRepository
     Task<IReadOnlyList<User>> GetAllUsersAsync();
     Task<User?> GetUserByIdAsync(int userId);
     Task<User?> GetUserByLoginAsync(string login);
-    Task<bool> CreateUserAsync(User user);
-    Task<bool> UpdateUserAsync(User user);
-    Task<bool> DeleteUserByIdAsync(int userId);
+    Task<User> CreateUserAsync(User user);
+    Task<User> UpdateUserAsync(User user);
+    Task DeleteUserByIdAsync(User user);
 }
