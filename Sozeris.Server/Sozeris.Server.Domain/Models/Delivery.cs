@@ -1,6 +1,6 @@
 using Sozeris.Server.Domain.Enums;
 
-namespace Sozeris.Server.Models.Models;
+namespace Sozeris.Server.Domain.Models;
 
 public class Delivery
 {

@@ -1,6 +1,7 @@
 using Sozeris.Server.Domain.Entities;
 using Sozeris.Server.Domain.Interfaces.Repositories;
-using Sozeris.Server.Domain.Interfaces.Services;
+using Sozeris.Server.Logic.Common;
+using Sozeris.Server.Logic.Interfaces.Services;
 
 namespace Sozeris.Server.Logic.Services;
 
@@ -20,32 +21,38 @@ public class ProductService : IProductService
         return products;
     }
 
-    public async Task<Product?> GetProductByIdAsync(int productId)
+    public async Task<Result<Product>> GetProductByIdAsync(int productId)
     {
-        var product = await _productRepository.GetProductByIdAsync(productId);
+        var result = await _productRepository.GetProductByIdAsync(productId);
+        if (result == null) return Result<Product>.Fail("Product not found"); 
         
-        return product;
+        return Result<Product>.Ok(result);
     }
 
-    public async Task<Product?> AddProductAsync(Product product)
+    public async Task<Result<Product>> AddProductAsync(Product product)
     {
-        var created = await _productRepository.AddProductAsync(product);
+        var newProduct = await _productRepository.AddProductAsync(product);
         
-        return created;
+        return Result<Product>.Ok(newProduct);
     }
 
-    public async Task<bool> UpdateProductAsync(int productId, Product product)
+    public async Task<Result<Product>> UpdateProductAsync(int productId, Product product)
     {
         var existing = await _productRepository.GetProductByIdAsync(productId);
-        if (existing is null)
-            return false;
+        if (existing is null) return Result<Product>.Fail("Product not found");
 
         existing.CloneFrom(product);
-        return await _productRepository.UpdateProductAsync(existing);
+        var updateProduct = await _productRepository.UpdateProductAsync(existing);
+        
+        return Result<Product>.Ok(updateProduct);
     }
 
-    public async Task<bool> DeleteProductByIdAsync(int productId)
+    public async Task<Result> DeleteProductByIdAsync(int productId)
     {
-        return await _productRepository.DeleteProductByIdAsync(productId);
+        var existing = await _productRepository.GetProductByIdAsync(productId);
+        if (existing is null) return Result.Fail("Product not found");
+        
+        await _productRepository.DeleteProductByIdAsync(existing);
+        return Result.Ok();
     }
 }

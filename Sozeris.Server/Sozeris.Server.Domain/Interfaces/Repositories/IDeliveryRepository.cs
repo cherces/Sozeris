@@ -4,9 +4,9 @@ namespace Sozeris.Server.Domain.Interfaces.Repositories;
 
 public interface IDeliveryHistoryRepository
 {
-    Task<IReadOnlyList<DeliveryHistory>> GetAllAsync();
-    Task<IReadOnlyList<DeliveryHistory>> GetByDateAsync(DateTime date);
-    Task<DeliveryHistory?> GetBySubscriptionAndDateAsync(int subscriptionId, DateTime date);
-    Task<DeliveryHistory> AddAsync(DeliveryHistory deliveryHistory);
-    Task<DeliveryHistory> UpdateAsync(DeliveryHistory deliveryHistory);
+    Task<IReadOnlyList<DeliveryHistory>> GetAllDeliveryHistoryAsync();
+    Task<IReadOnlyList<DeliveryHistory>> GetDeliveryHistoryByDateAsync(DateTime date);
+    Task<DeliveryHistory?> GetDeliveryHistoryBySubscriptionAndDateAsync(int subscriptionId, DateTime date);
+    Task<DeliveryHistory> AddDeliveryHistoryAsync(DeliveryHistory deliveryHistory);
+    Task<DeliveryHistory> UpdateDeliveryHistoryAsync(DeliveryHistory deliveryHistory);
 }

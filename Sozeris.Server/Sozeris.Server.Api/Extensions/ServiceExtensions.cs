@@ -1,4 +1,4 @@
-using Sozeris.Server.Domain.Interfaces.Services;
+using Sozeris.Server.Logic.Interfaces.Services;
 using Sozeris.Server.Logic.Services;
 
 namespace Sozeris.Server.Api.Extensions;
@@ -11,5 +11,6 @@ public static class ServiceExtensions
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<ISubscriptionService, SubscriptionService>();
+        services.AddScoped<IDeliveryService, DeliveryService>();
     }
 }

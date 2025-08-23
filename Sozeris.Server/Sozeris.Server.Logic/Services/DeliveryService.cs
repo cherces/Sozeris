@@ -1,8 +1,9 @@
 using Sozeris.Server.Domain.Entities;
 using Sozeris.Server.Domain.Enums;
 using Sozeris.Server.Domain.Interfaces.Repositories;
-using Sozeris.Server.Domain.Interfaces.Services;
-using Sozeris.Server.Models.Models;
+using Sozeris.Server.Logic.Interfaces.Services;
+using Sozeris.Server.Domain.Models;
+using Sozeris.Server.Logic.Common;
 
 namespace Sozeris.Server.Logic.Services;
 
@@ -22,7 +23,7 @@ public class DeliveryService : IDeliveryService
         var today = DateTime.UtcNow.Date;
 
         var subscriptions = await _subscriptionRepository.GetAllSubscriptionsAsync();
-        var deliveryHistories = await _deliveryHistoryRepository.GetByDateAsync(today);
+        var deliveryHistories = await _deliveryHistoryRepository.GetDeliveryHistoryByDateAsync(today);
         
         var deliveries = subscriptions
             .Where(s => s.IsActive && s.StartDate <= today && s.EndDate >= today)
@@ -48,19 +49,19 @@ public class DeliveryService : IDeliveryService
         return deliveries;
     }
     
-    public async Task<DeliveryHistory> MarkDeliveryAsync(int subscriptionId, DeliveryStatus status, string? reason)
+    public async Task<Result<DeliveryHistory>> MarkDeliveryAsync(int subscriptionId, DeliveryStatus status, string? reason)
     {
         var today = DateTime.UtcNow.Date;
 
-        var existing = await _deliveryHistoryRepository.GetBySubscriptionAndDateAsync(subscriptionId, today);
+        var existing = await _deliveryHistoryRepository.GetDeliveryHistoryBySubscriptionAndDateAsync(subscriptionId, today);
 
         if (existing != null)
         {
             existing.Status = status;
             existing.Reason = status == DeliveryStatus.NotDelivered ? reason : null;
 
-            await _deliveryHistoryRepository.UpdateAsync(existing);
-            return existing;
+            await _deliveryHistoryRepository.UpdateDeliveryHistoryAsync(existing);
+            return Result<DeliveryHistory>.Ok(existing);
         }
 
         var history = new DeliveryHistory
@@ -71,7 +72,8 @@ public class DeliveryService : IDeliveryService
             Reason = status == DeliveryStatus.NotDelivered ? reason : null
         };
 
-        await _deliveryHistoryRepository.AddAsync(history);
-        return history;
+        await _deliveryHistoryRepository.AddDeliveryHistoryAsync(history);
+        
+        return Result<DeliveryHistory>.Ok(history);
     }
 }
