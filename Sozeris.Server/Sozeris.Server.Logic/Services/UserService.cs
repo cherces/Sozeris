@@ -25,7 +25,7 @@ public class UserService : IUserService
     public async Task<Result<User>> GetUserByIdAsync(int userId)
     {
         var user = await _userRepository.GetUserByIdAsync(userId);
-        if (user == null) return Result<User>.Fail("User not found");
+        if (user == null) return Result<User>.Fail(DomainError.NotFound("User", userId));
         
         return Result<User>.Ok(user);
     }
@@ -33,7 +33,7 @@ public class UserService : IUserService
     public async Task<Result<User>> GetUserByLoginAsync(string login)
     {
         var user = await _userRepository.GetUserByLoginAsync(login);
-        if (user == null) return Result<User>.Fail("User not found");
+        if (user == null) return Result<User>.Fail(DomainError.NotFound("User", login));
         
         return Result<User>.Ok(user);
     }
@@ -50,7 +50,7 @@ public class UserService : IUserService
     {
         var oldUser = await _userRepository.GetUserByIdAsync(user.Id);
         
-        if (oldUser == null) return Result<User>.Fail("User not found");
+        if (oldUser == null) return Result<User>.Fail(DomainError.NotFound("User", user.Id));
         
         oldUser.Password = PasswordHasher.HashPassword(user.Password);
         var updateUser = await _userRepository.UpdateUserAsync(oldUser);
@@ -61,7 +61,7 @@ public class UserService : IUserService
     public async Task<Result> DeleteUserByIdAsync(int userId)
     {
         var user = await _userRepository.GetUserByIdAsync(userId);
-        if (user == null) return Result.Fail("User not found");
+        if (user == null) return Result.Fail(DomainError.NotFound("User", userId));
         
         await _userRepository.DeleteUserByIdAsync(user);
         return Result.Ok();

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Sozeris.Server.Api.DTO.User;
 using Sozeris.Server.Api.Models.Common;
 using Sozeris.Server.Domain.Entities;
+using Sozeris.Server.Logic.Common;
 using Sozeris.Server.Logic.Interfaces.Services;
 
 namespace Sozeris.Server.Api.Controllers;
@@ -29,49 +30,51 @@ public class UsersController : ControllerBase
         return Ok(ApiResponse<List<UserResponseDTO>>.Ok(dto));
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<ApiResponse<UserResponseDTO>>> GetUserById(int id)
     {
         var result = await _userService.GetUserByIdAsync(id);
-        if (!result.Success) return NotFound(ApiResponse<object>.Fail(new Exception(result.ErrorMessage)));
-        
-        var dto = _mapper.Map<UserResponseDTO>(result.Value);
-        
-        return Ok(ApiResponse<UserResponseDTO>.Ok(dto));
+
+        return result.Match(
+            onSuccess: user => _mapper.Map<UserResponseDTO>(user).ToApiResponse(this),
+            onFailure: error => error.ToApiResponse<UserResponseDTO>(this)
+        );
     }
 
     [HttpPost]
     public async Task<ActionResult<ApiResponse<UserResponseDTO>>> CreateUser([FromBody] UserCreateDTO userDto)
     {
-        if (!ModelState.IsValid) return BadRequest(ApiResponse<object>.Fail(ModelState));
-        
         var user = _mapper.Map<User>(userDto);
         var result = await _userService.CreateUserAsync(user);
-        if (!result.Success) return BadRequest(ApiResponse<object>.Fail(new Exception(result.ErrorMessage)));
-        
-        var response = _mapper.Map<UserResponseDTO>(result.Value);
 
-        return CreatedAtAction(nameof(GetUserById), new { id = result.Value.Id }, response);
+        return result.Match(
+            onSuccess: created => _mapper.Map<UserResponseDTO>(created)
+                .ToCreatedAt(this, nameof(GetUserById), new { id = user.Id }),
+            onFailure: error => error.ToApiResponse<UserResponseDTO>(this)
+        );
     }
 
     [HttpPut]
-    public async Task<ActionResult<ApiResponse>> UpdateUser([FromBody] UserUpdateDTO userDto)
+    public async Task<ActionResult<ApiResponse>> UpdateUser(int userId, [FromBody] UserUpdateDTO userDto)
     {
-        if (!ModelState.IsValid) return BadRequest(ApiResponse<object>.Fail(ModelState));
-        
         var user = _mapper.Map<User>(userDto);
+        user.Id = userId;
         var result = await _userService.UpdateUserAsync(user);
-        if (!result.Success) return BadRequest(ApiResponse<object>.Fail(new Exception(result.ErrorMessage)));
 
-        return Ok(ApiResponse.Ok());
+        return result.Match(
+            onSuccess: () => this.ToApiResponse(),
+            onFailure: error => error.ToApiResponse(this)
+        );
     }
 
-    [HttpDelete("{userId}")]
-    public async Task<ActionResult> DeleteUserById(int userId)
+    [HttpDelete("{userId:int}")]
+    public async Task<ActionResult<ApiResponse>> DeleteUserById(int userId)
     {
         var result = await _userService.DeleteUserByIdAsync(userId);
-        if (!result.Success) return NotFound(ApiResponse<object>.Fail(new Exception(result.ErrorMessage)));
 
-        return Ok(ApiResponse.Ok());
+        return result.Match(
+            onSuccess: () => this.ToApiResponse(),
+            onFailure: error => error.ToApiResponse(this)
+        );
     }
 }

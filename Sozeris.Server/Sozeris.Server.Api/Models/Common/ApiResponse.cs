@@ -1,52 +1,39 @@
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc;
+using Sozeris.Server.Api.Models.Common;
+using Sozeris.Server.Logic.Common;
 
 namespace Sozeris.Server.Api.Models.Common;
 
 public class ApiResponse
 {
-    public bool Success { get; set; }
-    public string Message { get; set; }
+    public bool IsSuccess { get; set; }
     
-    [JsonConverter(typeof(ExceptionJsonConverter))] 
-    public Exception? Exception { get; }
+    public ProblemDetails? Error { get; set; }
 
-    protected ApiResponse(bool success, string message, Exception? exception = null)
+    protected ApiResponse(bool isSuccess, ProblemDetails? error = null)
     {
-        Success = success;
-        Message = message;
-        Exception = exception;
+        IsSuccess = isSuccess;
+        Error = error;
     }
     
-    public static ApiResponse Ok() => new ApiResponse(true, string.Empty);
-    public static ApiResponse Fail(Exception ex) => new ApiResponse(false, ex.Message, ex);
+    public static ApiResponse Ok() => new ApiResponse(true);
+    public static ApiResponse Fail(Exception ex, HttpContext? context) => new ApiResponse(false, BuildProblemDetails.Build(ex, context));
+    public static ApiResponse Fail(DomainError error, HttpContext? context) => new ApiResponse(false, BuildProblemDetails.Build(error, context));
 }
 
 public class ApiResponse<T> : ApiResponse
 {
     public T? Data { get; set; }
 
-    private ApiResponse(bool success, string message, T? data, Exception? exception = null) 
-        : base(success, message, exception)
+    private ApiResponse(bool isSuccess, T? data = default, ProblemDetails? error = null) 
+        : base(isSuccess, error)
     {
         Data = data;
     }
     
-    public static ApiResponse<T> Ok(T data) => 
-        new ApiResponse<T>(true, String.Empty, data);
-    public new static ApiResponse<T> Fail(Exception ex) => 
-        new ApiResponse<T>(false, ex.Message, default, ex);
-    
-    public static ApiResponse<T> Fail(ModelStateDictionary modelState)
-    {
-        var errors = modelState
-            .Where(ms => ms.Value.Errors.Count > 0)
-            .ToDictionary(
-                k => k.Key,
-                k => k.Value.Errors.Select(e => e.ErrorMessage).ToArray()
-            );
-
-        var ex = new ValidationException("Ошибка валидации", errors);
-        return Fail(ex);
-    }
+    public static ApiResponse<T> Ok(T data) => new ApiResponse<T>(true, data);
+    public new static ApiResponse<T> Fail(Exception ex, HttpContext? context = null) =>
+        new ApiResponse<T>(false, default, BuildProblemDetails.Build(ex, context));
+    public new static ApiResponse<T> Fail(DomainError error, HttpContext? context = null) =>
+        new ApiResponse<T>(false, default, BuildProblemDetails.Build(error, context));
 }

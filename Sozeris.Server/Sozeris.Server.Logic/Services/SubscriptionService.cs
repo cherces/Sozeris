@@ -24,7 +24,7 @@ public class SubscriptionService : ISubscriptionService
     public async Task<Result<Subscription>> GetSubscriptionByIdAsync(int subscriptionId)
     {
         var subscription = await _subscriptionRepository.GetSubscriptionByIdAsync(subscriptionId);
-        if (subscription == null) return Result<Subscription>.Fail("Subscription not found");
+        if (subscription == null) return Result<Subscription>.Fail(DomainError.NotFound("Subscription", subscriptionId));
         
         return Result<Subscription>.Ok(subscription);
     }

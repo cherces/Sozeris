@@ -2,28 +2,29 @@ namespace Sozeris.Server.Logic.Common;
 
 public class Result
 {
-    public bool Success { get; set; }
-    public string ErrorMessage { get; set; }
+    public bool IsSuccess { get; set; }
+    public DomainError? Error { get; set; }
 
-    protected Result(bool success, string errorMessage)
+    protected Result(bool isSuccess, DomainError? error = null)
     {
-        Success = success;
-        ErrorMessage = errorMessage;
+        IsSuccess = isSuccess;
+        Error = error;
     }
     
-    public static Result Ok() => new Result(true, string.Empty);
-    public static Result Fail(string errorMessage) => new Result(false, errorMessage);
+    public static Result Ok() => new Result(true);
+    public static Result Fail(DomainError error) => new Result(false, error);
 }
 
 public class Result<T> : Result
 {
-    public T Value { get; }
+    public T? Value { get; }
 
-    private Result(bool success, T value, string errorMessage) : base(success, errorMessage)
+    private Result(bool isSuccess, T? value = default, DomainError? error = null) 
+        : base(isSuccess, error)
     {
         Value = value;
     }
 
-    public static Result<T> Ok(T data) => new Result<T>(true, data, string.Empty);
-    public new static Result<T> Fail(string errorMessage) => new Result<T>(false, default!, errorMessage);
+    public static Result<T> Ok(T value) => new Result<T>(true, value);
+    public new static Result<T> Fail(DomainError error) => new Result<T>(false, default, error);
 }
