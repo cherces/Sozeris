@@ -9,6 +9,8 @@ using Sozeris.Server.Domain.Entities;
 using Sozeris.Server.Domain.Interfaces.Repositories;
 using Sozeris.Server.Domain.Models;
 using Sozeris.Server.Logic.Common;
+using Sozeris.Server.Logic.Common.Enum;
+using DomainError = Sozeris.Server.Logic.Common.DomainError;
 
 namespace Sozeris.Server.Logic.Services;
 
@@ -30,7 +32,7 @@ public class AuthService : IAuthService
         var user = await _userRepository.GetUserByLoginAsync(login);
         
         if (user is null || !PasswordHasher.VerifyPassword(password, user.Password))
-            return Result<AuthModel>.Fail("Invalid login or password");
+            return Result<AuthModel>.Fail(DomainError.Unauthorized("Invalid login or password"));
 
         var accessToken = GenerateAccessToken(user);
         var refreshToken = Guid.NewGuid().ToString();
@@ -54,7 +56,7 @@ public class AuthService : IAuthService
     {
         var tokenEntity = await _jwtTokenRepository.GetRefreshTokenAsync(refreshToken);
         
-        if (tokenEntity is null) return Result<AuthModel>.Fail("Invalid refresh token");
+        if (tokenEntity is null) return Result<AuthModel>.Fail(DomainError.Unauthorized("Invalid refresh token"));
         
         await _jwtTokenRepository.RevokeRefreshTokenAsync(refreshToken);
         

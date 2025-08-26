@@ -1,6 +1,8 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Sozeris.Server.Api.DTO.Auth;
 using Sozeris.Server.Api.Models.Common;
+using Sozeris.Server.Logic.Common;
 using Sozeris.Server.Logic.Interfaces.Services;
 
 namespace Sozeris.Server.Api.Controllers;
@@ -10,20 +12,22 @@ namespace Sozeris.Server.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly IMapper _mapper;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, Mapper mapper)
     {
         _authService = authService;
+        _mapper = mapper;
     }
     
     [HttpPost("login")]
     public async Task<ActionResult<ApiResponse<JwtResponseDTO>>> Login([FromBody] JwtRequestDTO jwtDto)
     {
         var result = await _authService.LoginAsync(jwtDto.Login, jwtDto.Password);
-        if (!result.Success) return BadRequest(ApiResponse<object>.Fail(new Exception(result.ErrorMessage)));
-        
-        return Ok(ApiResponse<JwtResponseDTO>.Ok(
-                new JwtResponseDTO(result.Value.AccessToken, result.Value.RefreshToken))
+
+        return result.Match(
+            onSuccess: created => _mapper.Map<JwtResponseDTO>(created).ToApiResponse(this),
+            onFailure: error => error.ToApiResponse<JwtResponseDTO>(this)
         );
     }
     
@@ -31,19 +35,21 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<ApiResponse>> Logout([FromBody] string refreshToken)
     {
         var result = await _authService.LogoutAsync(refreshToken);
-        if (!result.Success) return BadRequest(ApiResponse.Fail(new Exception(result.ErrorMessage)));
-        
-        return Ok(ApiResponse.Ok());
+
+        return result.Match(
+            onSuccess: () => this.ToApiResponse(),
+            onFailure: error => error.ToApiResponse(this)
+        );
     }
 
     [HttpPost("refreshToken")]
     public async Task<ActionResult<ApiResponse<JwtResponseDTO>>> RefreshToken([FromBody] JwtRefreshDTO jwtRefreshDto)
     {
         var result = await _authService.RefreshTokenAsync(jwtRefreshDto.RefreshToken);
-        if (!result.Success) return BadRequest(ApiResponse<object>.Fail(new Exception(result.ErrorMessage)));
-        
-        return Ok(ApiResponse<JwtResponseDTO>.Ok(
-            new JwtResponseDTO(result.Value.AccessToken, result.Value.RefreshToken))
+
+        return result.Match(
+            onSuccess: refresh => _mapper.Map<JwtResponseDTO>(refresh).ToApiResponse(this),
+            onFailure: error => error.ToApiResponse<JwtResponseDTO>(this)
         );
     }
 }

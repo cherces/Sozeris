@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Sozeris.Server.Api.DTO.Delivery;
 using Sozeris.Server.Api.Models.Common;
+using Sozeris.Server.Logic.Common;
 using Sozeris.Server.Logic.Interfaces.Services;
 
 namespace Sozeris.Server.Api.Controllers;
@@ -29,14 +30,13 @@ public class DeliveryController : ControllerBase
     }
     
     [HttpPost("{subscriptionId}/status")]
-    public async Task<ActionResult<ApiResponse<DeliveryForHistoryDTO>>> MarkDelivery(int subscriptionId, [FromBody] DeliveryMarkRequestDTO request)
+    public async Task<ActionResult<ApiResponse>> MarkDelivery(int subscriptionId, [FromBody] DeliveryMarkRequestDTO request)
     {
-        if (!ModelState.IsValid) return BadRequest(ApiResponse<object>.Fail(ModelState));
-
         var result = await _deliveryService.MarkDeliveryAsync(subscriptionId, request.Status, request.Reason);
-        if (!result.Success) return BadRequest(ApiResponse<object>.Fail(new Exception(result.ErrorMessage)));
 
-        var dto = _mapper.Map<DeliveryForHistoryDTO>(result.Value);
-        return Ok(ApiResponse<DeliveryForHistoryDTO>.Ok(dto));
+        return result.Match(
+            onSuccess: () => this.ToApiResponse(),
+            onFailure: error => error.ToApiResponse(this)
+        );
     }
 }

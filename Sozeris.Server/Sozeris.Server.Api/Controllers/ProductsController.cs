@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Sozeris.Server.Api.DTO.Product;
 using Sozeris.Server.Api.Models.Common;
 using Sozeris.Server.Domain.Entities;
+using Sozeris.Server.Logic.Common;
 using Sozeris.Server.Logic.Interfaces.Services;
 
 namespace Sozeris.Server.Api.Controllers;
@@ -29,52 +30,51 @@ public class ProductsController : ControllerBase
         return Ok(ApiResponse<List<ProductResponseDTO>>.Ok(dto));
     }
 
-    [HttpGet("{productId}")]
+    [HttpGet("{productId:int}")]
     public async Task<ActionResult<ApiResponse<ProductResponseDTO>>> GetProductById(int productId)
     {
         var result = await _productService.GetProductByIdAsync(productId);
-        if (!result.Success) return NotFound(ApiResponse<object>.Fail(new Exception(result.ErrorMessage)));
-        
-        var dto = _mapper.Map<ProductResponseDTO>(result.Value);
-        
-        return Ok(ApiResponse<ProductResponseDTO>.Ok(dto));
+
+        return result.Match(
+            onSuccess: product => _mapper.Map<ProductResponseDTO>(product).ToApiResponse(this),
+            onFailure: error => error.ToApiResponse<ProductResponseDTO>(this)
+        );
     }
 
     [HttpPost]
     public async Task<ActionResult<ApiResponse<ProductResponseDTO>>> CreateProduct([FromBody] ProductCreateDTO productDto)
     {
-        if (!ModelState.IsValid) return BadRequest(ApiResponse<object>.Fail(ModelState));
-        
         var product = _mapper.Map<Product>(productDto);
-        
         var result = await _productService.AddProductAsync(product);
-        if (!result.Success) return BadRequest(ApiResponse<object>.Fail(new Exception(result.ErrorMessage)));
-        
-        var response = _mapper.Map<ProductResponseDTO>(result.Value);
 
-        return CreatedAtAction(nameof(GetProductById), new { productId = result.Value.Id }, response);
+        return result.Match(
+            onSuccess: created => _mapper.Map<ProductResponseDTO>(created)
+                .ToCreatedAt(this, nameof(GetProductById), new { productId = created.Id }),
+            onFailure: error => error.ToApiResponse<ProductResponseDTO>(this)
+        );
     }
 
-    [HttpPut("{productId}")]
+    [HttpPut("{productId:int}")]
     public async Task<ActionResult<ApiResponse>> UpdateProduct(int productId, [FromBody] ProductUpdateDTO productDto)
     {
-        if (!ModelState.IsValid) return BadRequest(ApiResponse<object>.Fail(ModelState));
-        
         var product = _mapper.Map<Product>(productDto);
         product.Id = productId;
-        
         var result = await _productService.UpdateProductAsync(productId, product);
-        if (!result.Success) return BadRequest(ApiResponse.Fail(new Exception(result.ErrorMessage)));
 
-        return Ok(ApiResponse.Ok());
+        return result.Match(
+            onSuccess: () => this.ToApiResponse(),
+            onFailure: error => error.ToApiResponse(this)
+        );
     }
 
-    [HttpDelete("{productId}")]
+    [HttpDelete("{productId:int}")]
     public async Task<ActionResult<ApiResponse>> DeleteProductById(int productId)
     {
         var result = await _productService.DeleteProductByIdAsync(productId);
-        if (!result.Success) return NotFound(ApiResponse.Fail(new Exception(result.ErrorMessage)));
-        
-        return Ok(ApiResponse.Ok());
+
+        return result.Match(
+            onSuccess: () => this.ToApiResponse(),
+            onFailure: error => error.ToApiResponse(this)
+        );
     }
 }
