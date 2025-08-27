@@ -14,36 +14,36 @@ public class DeliveryHistoryRepository : IDeliveryHistoryRepository
         _context = context;
     }
 
-    public async Task<IReadOnlyList<DeliveryHistory>> GetAllDeliveryHistoryAsync()
+    public async Task<IReadOnlyList<DeliveryHistory>> GetAllDeliveryHistoryAsync(CancellationToken ct)
     {
-        return await _context.DeliveryHistory.AsNoTracking().ToListAsync();
+        return await _context.DeliveryHistory.AsNoTracking().ToListAsync(ct);
     }
 
-    public async Task<IReadOnlyList<DeliveryHistory>> GetDeliveryHistoryByDateAsync(DateTime date)
+    public async Task<IReadOnlyList<DeliveryHistory>> GetDeliveryHistoryByDateAsync(DateTime date, CancellationToken ct)
     {
         return await _context.DeliveryHistory
             .Where(dh => dh.DeliveryDate == date)
             .AsNoTracking()
-            .ToListAsync();
+            .ToListAsync(ct);
     }
 
-    public async Task<DeliveryHistory?> GetDeliveryHistoryBySubscriptionAndDateAsync(int subscriptionId, DateTime date)
+    public async Task<DeliveryHistory?> GetDeliveryHistoryBySubscriptionAndDateAsync(int subscriptionId, DateTime date, CancellationToken ct)
     {
         return await _context.DeliveryHistory
-            .FirstOrDefaultAsync(dh => dh.SubscriptionId == subscriptionId && dh.DeliveryDate == date);
+            .FirstOrDefaultAsync(dh => dh.SubscriptionId == subscriptionId && dh.DeliveryDate == date, ct);
     }
 
-    public async Task<DeliveryHistory> AddDeliveryHistoryAsync(DeliveryHistory deliveryHistory)
+    public async Task<DeliveryHistory> AddDeliveryHistoryAsync(DeliveryHistory deliveryHistory, CancellationToken ct)
     {
-        _context.DeliveryHistory.Add(deliveryHistory);
-        await _context.SaveChangesAsync();
+        await _context.DeliveryHistory.AddAsync(deliveryHistory, ct);
+        await _context.SaveChangesAsync(ct);
         return deliveryHistory;
     }
 
-    public async Task<DeliveryHistory> UpdateDeliveryHistoryAsync(DeliveryHistory deliveryHistory)
+    public async Task<DeliveryHistory> UpdateDeliveryHistoryAsync(DeliveryHistory deliveryHistory, CancellationToken ct)
     {
         _context.DeliveryHistory.Update(deliveryHistory);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(ct);
         return deliveryHistory;
     }
 }

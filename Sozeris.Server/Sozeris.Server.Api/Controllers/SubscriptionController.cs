@@ -22,18 +22,18 @@ public class SubscriptionController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<List<SubscriptionResponseDTO>>>> GetAllSubscriptions()
+    public async Task<ActionResult<ApiResponse<List<SubscriptionResponseDTO>>>> GetAllSubscriptions(CancellationToken ct)
     {
-        var subscriptions = await _subscriptionService.GetAllSubscriptionsAsync();
+        var subscriptions = await _subscriptionService.GetAllSubscriptionsAsync(ct);
         var dto = _mapper.Map<List<SubscriptionResponseDTO>>(subscriptions);
         
         return Ok(ApiResponse<List<SubscriptionResponseDTO>>.Ok(dto));
     }
 
     [HttpGet("{subscriptionId:int}")]
-    public async Task<ActionResult<ApiResponse<SubscriptionResponseDTO>>> GetSubscriptionByIdAsync(int subscriptionId)
+    public async Task<ActionResult<ApiResponse<SubscriptionResponseDTO>>> GetSubscriptionByIdAsync(int subscriptionId, CancellationToken ct)
     {
-        var result = await _subscriptionService.GetSubscriptionByIdAsync(subscriptionId);
+        var result = await _subscriptionService.GetSubscriptionByIdAsync(subscriptionId, ct);
 
         return result.Match(
             onSuccess: subscription => _mapper.Map<SubscriptionResponseDTO>(subscription).ToApiResponse(this),
@@ -42,9 +42,9 @@ public class SubscriptionController : ControllerBase
     }
 
     [HttpGet("user/{userId:int}")]
-    public async Task<ActionResult<ApiResponse<List<SubscriptionResponseDTO>>>> GetSubscriptionsByUserIdAsync(int userId)
+    public async Task<ActionResult<ApiResponse<List<SubscriptionResponseDTO>>>> GetSubscriptionsByUserIdAsync(int userId, CancellationToken ct)
     {
-        var subscriptions = await _subscriptionService.GetSubscriptionsByUserIdAsync(userId);
+        var subscriptions = await _subscriptionService.GetSubscriptionsByUserIdAsync(userId, ct);
         
         var dto = _mapper.Map<List<SubscriptionResponseDTO>>(subscriptions);
         
@@ -52,10 +52,10 @@ public class SubscriptionController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<SubscriptionResponseDTO>>> AddSubscriptionAsync([FromBody] SubscriptionCreateDTO subscriptionDto)
+    public async Task<ActionResult<ApiResponse<SubscriptionResponseDTO>>> AddSubscriptionAsync([FromBody] SubscriptionCreateDTO subscriptionDto, CancellationToken ct)
     {
         var subscription = _mapper.Map<Subscription>(subscriptionDto);
-        var result = await _subscriptionService.AddSubscriptionAsync(subscription);
+        var result = await _subscriptionService.AddSubscriptionAsync(subscription, ct);
 
         return result.Match(
             onSuccess: created => _mapper.Map<SubscriptionResponseDTO>(created)

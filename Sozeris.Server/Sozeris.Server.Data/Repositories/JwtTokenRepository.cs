@@ -14,28 +14,28 @@ public class JwtTokenRepository : IJwtTokenRepository
         _context = context;
     }
 
-    public async Task AddRefreshTokenAsync(JwtRefreshToken refreshToken)
+    public async Task AddRefreshTokenAsync(JwtRefreshToken refreshToken, CancellationToken ct)
     {
-        await _context.JwtRefreshTokens.AddAsync(refreshToken);
-        await _context.SaveChangesAsync();
+        await _context.JwtRefreshTokens.AddAsync(refreshToken, ct);
+        await _context.SaveChangesAsync(ct);
     }
     
-    public async Task RevokeRefreshTokenAsync(string refreshToken)
+    public async Task RevokeRefreshTokenAsync(string refreshToken, CancellationToken ct)
     {
-        var token = await _context.JwtRefreshTokens.FirstOrDefaultAsync(t => t.Token == refreshToken);
+        var token = await _context.JwtRefreshTokens.FirstOrDefaultAsync(t => t.Token == refreshToken, ct);
         
         if (token is null) return;
         
         token.IsRevoked = true;
         
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(ct);
     }
 
-    public async Task<JwtRefreshToken?> GetRefreshTokenAsync(string refreshToken)
+    public async Task<JwtRefreshToken?> GetRefreshTokenAsync(string refreshToken, CancellationToken ct)
     {
         var token = await _context.JwtRefreshTokens
             .Include(u => u.User)
-            .FirstOrDefaultAsync(t => t.Token == refreshToken && t.IsActive);
+            .FirstOrDefaultAsync(t => t.Token == refreshToken && t.IsActive, ct);
         
         return token;
     }

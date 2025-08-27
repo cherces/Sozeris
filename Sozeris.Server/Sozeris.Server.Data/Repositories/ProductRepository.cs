@@ -14,33 +14,33 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
 
-    public async Task<IReadOnlyList<Product>> GetAllProductsAsync()
+    public async Task<IReadOnlyList<Product>> GetAllProductsAsync(CancellationToken ct)
     {
-        return await _context.Products.AsNoTracking().ToListAsync();
+        return await _context.Products.AsNoTracking().ToListAsync(ct);
     }
 
-    public async Task<Product?> GetProductByIdAsync(int productId)
+    public async Task<Product?> GetProductByIdAsync(int productId, CancellationToken ct)
     {
-        return await _context.Products.FindAsync(productId);
+        return await _context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == productId, ct);
     }
 
-    public async Task<Product> AddProductAsync(Product product)
+    public async Task<Product> AddProductAsync(Product product, CancellationToken ct)
     {
-        _context.Products.Add(product);
-        await _context.SaveChangesAsync();
+        await _context.Products.AddAsync(product, ct);
+        await _context.SaveChangesAsync(ct);
         return product;
     }
 
-    public async Task<Product> UpdateProductAsync(Product product)
+    public async Task<Product> UpdateProductAsync(Product product, CancellationToken ct)
     {
         _context.Products.Update(product);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(ct);
         return product;
     }
 
-    public async Task DeleteProductByIdAsync(Product product)
+    public async Task DeleteProductByIdAsync(Product product, CancellationToken ct)
     {
         _context.Products.Remove(product);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(ct);
     }
 }
