@@ -22,18 +22,18 @@ public class UsersController : ControllerBase
     }
     
     [HttpGet("all")]
-    public async Task<ActionResult<ApiResponse<List<UserResponseDTO>>>> GetAllUsers()
+    public async Task<ActionResult<ApiResponse<List<UserResponseDTO>>>> GetAllUsers(CancellationToken ct)
     {
-        var users = await _userService.GetAllUsersAsync();
+        var users = await _userService.GetAllUsersAsync(ct);
         var dto  = _mapper.Map<List<UserResponseDTO>>(users);
         
         return Ok(ApiResponse<List<UserResponseDTO>>.Ok(dto));
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<ApiResponse<UserResponseDTO>>> GetUserById(int id)
+    public async Task<ActionResult<ApiResponse<UserResponseDTO>>> GetUserById(int id, CancellationToken ct)
     {
-        var result = await _userService.GetUserByIdAsync(id);
+        var result = await _userService.GetUserByIdAsync(id, ct);
 
         return result.Match(
             onSuccess: user => _mapper.Map<UserResponseDTO>(user).ToApiResponse(this),
@@ -42,10 +42,10 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<UserResponseDTO>>> CreateUser([FromBody] UserCreateDTO userDto)
+    public async Task<ActionResult<ApiResponse<UserResponseDTO>>> CreateUser([FromBody] UserCreateDTO userDto, CancellationToken ct)
     {
         var user = _mapper.Map<User>(userDto);
-        var result = await _userService.CreateUserAsync(user);
+        var result = await _userService.CreateUserAsync(user, ct);
 
         return result.Match(
             onSuccess: created => _mapper.Map<UserResponseDTO>(created)
@@ -55,11 +55,11 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<ActionResult<ApiResponse>> UpdateUser(int userId, [FromBody] UserUpdateDTO userDto)
+    public async Task<ActionResult<ApiResponse>> UpdateUser(int userId, [FromBody] UserUpdateDTO userDto, CancellationToken ct)
     {
         var user = _mapper.Map<User>(userDto);
         user.Id = userId;
-        var result = await _userService.UpdateUserAsync(user);
+        var result = await _userService.UpdateUserAsync(user, ct);
 
         return result.Match(
             onSuccess: () => this.ToApiResponse(),
@@ -68,9 +68,9 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("{userId:int}")]
-    public async Task<ActionResult<ApiResponse>> DeleteUserById(int userId)
+    public async Task<ActionResult<ApiResponse>> DeleteUserById(int userId, CancellationToken ct)
     {
-        var result = await _userService.DeleteUserByIdAsync(userId);
+        var result = await _userService.DeleteUserByIdAsync(userId, ct);
 
         return result.Match(
             onSuccess: () => this.ToApiResponse(),

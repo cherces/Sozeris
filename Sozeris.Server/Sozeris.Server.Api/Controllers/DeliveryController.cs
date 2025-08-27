@@ -21,18 +21,18 @@ public class DeliveryController : ControllerBase
     }
 
     [HttpGet("today")]
-    public async Task<ActionResult<ApiResponse<List<DeliveryForDayDTO>>>> GetDeliveriesForDay()
+    public async Task<ActionResult<ApiResponse<List<DeliveryForDayDTO>>>> GetDeliveriesForDay(CancellationToken ct)
     {
-        var deliveries = await _deliveryService.GetDeliveriesForDayAsync();
+        var deliveries = await _deliveryService.GetDeliveriesForDayAsync(ct);
         var dto  = _mapper.Map<List<DeliveryForDayDTO>>(deliveries);
         
         return Ok(ApiResponse<List<DeliveryForDayDTO>>.Ok(dto));
     }
     
     [HttpPost("{subscriptionId}/status")]
-    public async Task<ActionResult<ApiResponse>> MarkDelivery(int subscriptionId, [FromBody] DeliveryMarkRequestDTO request)
+    public async Task<ActionResult<ApiResponse>> MarkDelivery(int subscriptionId, [FromBody] DeliveryMarkRequestDTO request, CancellationToken ct)
     {
-        var result = await _deliveryService.MarkDeliveryAsync(subscriptionId, request.Status, request.Reason);
+        var result = await _deliveryService.MarkDeliveryAsync(subscriptionId, request.Status, request.Reason, ct);
 
         return result.Match(
             onSuccess: () => this.ToApiResponse(),

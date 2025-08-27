@@ -19,7 +19,11 @@ public class ProductProfile : Profile
                     : Convert.FromBase64String(src.ImageBase64)));
 
         CreateMap<Product, ProductResponseDTO>()
-            .ForMember(dest => dest.ImageBase64, 
-                opt => opt.MapFrom(src => Convert.ToBase64String(src.Image)));
+            .ConstructUsing(src => new ProductResponseDTO(
+                src.Id,
+                src.Name,
+                src.Price,
+                null // ImageBase64 всегда null(пока что)
+            ));
     }
 }

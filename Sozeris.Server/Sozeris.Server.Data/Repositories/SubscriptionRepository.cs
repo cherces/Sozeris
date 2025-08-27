@@ -14,45 +14,45 @@ public class SubscriptionRepository : ISubscriptionRepository
         _context = context;
     }
 
-    public async Task<IReadOnlyList<Subscription>> GetAllSubscriptionsAsync()
+    public async Task<IReadOnlyList<Subscription>> GetAllSubscriptionsAsync(CancellationToken ct)
     {
         var subscriptions = await _context.Subscriptions
             .Include(u => u.User)
             .Include(s=> s.Orders)
                 .ThenInclude(o=>o.Product)
             .AsNoTracking()
-            .ToListAsync();
+            .ToListAsync(ct);
 
         return subscriptions;
     }
 
-    public async Task<Subscription?> GetSubscriptionByIdAsync(int subscriptionId)
+    public async Task<Subscription?> GetSubscriptionByIdAsync(int subscriptionId, CancellationToken ct)
     {
         var subscription = await _context.Subscriptions
             .Include(s => s.Orders)
             .ThenInclude(o => o.Product)
             .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.Id == subscriptionId);
+            .FirstOrDefaultAsync(s => s.Id == subscriptionId, ct);
         
         return subscription;
     }
 
-    public async Task<IReadOnlyList<Subscription>> GetSubscriptionsByUserIdAsync(int userId)
+    public async Task<IReadOnlyList<Subscription>> GetSubscriptionsByUserIdAsync(int userId, CancellationToken ct)
     {
         var subscriptions = await _context.Subscriptions
                 .Include(s => s.Orders)
                 .ThenInclude(o => o.Product)
                 .Where(x => x.UserId == userId)
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(ct);
 
         return subscriptions;
     }
 
-    public async Task<Subscription> AddSubscriptionAsync(Subscription subscription)
+    public async Task<Subscription> AddSubscriptionAsync(Subscription subscription, CancellationToken ct)
     {
-        _context.Subscriptions.Add(subscription);
-        await _context.SaveChangesAsync();
+        await _context.Subscriptions.AddAsync(subscription, ct);
+        await _context.SaveChangesAsync(ct);
         return subscription;
     }
 }

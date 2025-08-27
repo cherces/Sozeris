@@ -5,6 +5,7 @@ namespace Sozeris.Server.Domain.Entities;
 
 public class DeliveryHistory
 {
+    public int Id { get; set; }
     public int UserId { get; set; }
     public int SubscriptionId { get; set; }
     public DateTime DeliveryDate { get; set; }

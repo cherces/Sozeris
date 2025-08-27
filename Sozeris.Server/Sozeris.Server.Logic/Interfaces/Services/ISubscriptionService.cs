@@ -5,8 +5,8 @@ namespace Sozeris.Server.Logic.Interfaces.Services;
 
 public interface ISubscriptionService
 {    
-    Task<IReadOnlyList<Subscription>> GetAllSubscriptionsAsync();
-    Task<Result<Subscription>> GetSubscriptionByIdAsync(int subscriptionId);
-    Task<IReadOnlyList<Subscription>> GetSubscriptionsByUserIdAsync(int userId);
-    Task<Result<Subscription>> AddSubscriptionAsync(Subscription subscription);
+    Task<IReadOnlyList<Subscription>> GetAllSubscriptionsAsync(CancellationToken ct);
+    Task<Result<Subscription>> GetSubscriptionByIdAsync(int subscriptionId, CancellationToken ct);
+    Task<IReadOnlyList<Subscription>> GetSubscriptionsByUserIdAsync(int userId, CancellationToken ct);
+    Task<Result<Subscription>> AddSubscriptionAsync(Subscription subscription, CancellationToken ct);
 }

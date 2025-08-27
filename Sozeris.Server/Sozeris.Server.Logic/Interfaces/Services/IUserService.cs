@@ -5,10 +5,10 @@ namespace Sozeris.Server.Logic.Interfaces.Services;
 
 public interface IUserService
 {
-    public Task<IReadOnlyList<User>> GetAllUsersAsync();
-    public Task<Result<User>> GetUserByIdAsync(int userId);
-    public Task<Result<User>> GetUserByLoginAsync(string login);
-    public Task<Result<User>> CreateUserAsync(User user);
-    public Task<Result<User>> UpdateUserAsync(User user);
-    public Task<Result> DeleteUserByIdAsync(int userId);
+    public Task<IReadOnlyList<User>> GetAllUsersAsync(CancellationToken ct);
+    public Task<Result<User>> GetUserByIdAsync(int userId, CancellationToken ct);
+    public Task<Result<User>> GetUserByLoginAsync(string login, CancellationToken ct);
+    public Task<Result<User>> CreateUserAsync(User user, CancellationToken ct);
+    public Task<Result<User>> UpdateUserAsync(User user, CancellationToken ct);
+    public Task<Result> DeleteUserByIdAsync(int userId, CancellationToken ct);
 }

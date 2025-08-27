@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Sozeris.Server.Domain.Entities;
 
 public class Product

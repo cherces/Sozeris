@@ -14,31 +14,31 @@ public class SubscriptionService : ISubscriptionService
         _subscriptionRepository = subscriptionRepository;
     }
 
-    public async Task<IReadOnlyList<Subscription>> GetAllSubscriptionsAsync()
+    public async Task<IReadOnlyList<Subscription>> GetAllSubscriptionsAsync(CancellationToken ct)
     {
-        var subscriptions = await _subscriptionRepository.GetAllSubscriptionsAsync();
+        var subscriptions = await _subscriptionRepository.GetAllSubscriptionsAsync(ct);
         
         return subscriptions;
     }
 
-    public async Task<Result<Subscription>> GetSubscriptionByIdAsync(int subscriptionId)
+    public async Task<Result<Subscription>> GetSubscriptionByIdAsync(int subscriptionId, CancellationToken ct)
     {
-        var subscription = await _subscriptionRepository.GetSubscriptionByIdAsync(subscriptionId);
+        var subscription = await _subscriptionRepository.GetSubscriptionByIdAsync(subscriptionId, ct);
         if (subscription == null) return Result<Subscription>.Fail(DomainError.NotFound("Subscription", subscriptionId));
         
         return Result<Subscription>.Ok(subscription);
     }
 
-    public async Task<IReadOnlyList<Subscription>> GetSubscriptionsByUserIdAsync(int userId)
+    public async Task<IReadOnlyList<Subscription>> GetSubscriptionsByUserIdAsync(int userId, CancellationToken ct)
     {
-        var subscriptions = await _subscriptionRepository.GetSubscriptionsByUserIdAsync(userId);
+        var subscriptions = await _subscriptionRepository.GetSubscriptionsByUserIdAsync(userId, ct);
         
         return subscriptions;
     }
 
-    public async Task<Result<Subscription>> AddSubscriptionAsync(Subscription subscription)
+    public async Task<Result<Subscription>> AddSubscriptionAsync(Subscription subscription, CancellationToken ct)
     {
-        await _subscriptionRepository.AddSubscriptionAsync(subscription);
+        await _subscriptionRepository.AddSubscriptionAsync(subscription, ct);
         
         return Result<Subscription>.Ok(subscription);
     }

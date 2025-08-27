@@ -21,9 +21,9 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("login")]
-    public async Task<ActionResult<ApiResponse<JwtResponseDTO>>> Login([FromBody] JwtRequestDTO jwtDto)
+    public async Task<ActionResult<ApiResponse<JwtResponseDTO>>> Login([FromBody] JwtRequestDTO jwtDto, CancellationToken ct)
     {
-        var result = await _authService.LoginAsync(jwtDto.Login, jwtDto.Password);
+        var result = await _authService.LoginAsync(jwtDto.Login, jwtDto.Password, ct);
 
         return result.Match(
             onSuccess: created => _mapper.Map<JwtResponseDTO>(created).ToApiResponse(this),
@@ -32,9 +32,9 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("logout")]
-    public async Task<ActionResult<ApiResponse>> Logout([FromBody] string refreshToken)
+    public async Task<ActionResult<ApiResponse>> Logout([FromBody] string refreshToken, CancellationToken ct)
     {
-        var result = await _authService.LogoutAsync(refreshToken);
+        var result = await _authService.LogoutAsync(refreshToken, ct);
 
         return result.Match(
             onSuccess: () => this.ToApiResponse(),
@@ -43,9 +43,9 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("refreshToken")]
-    public async Task<ActionResult<ApiResponse<JwtResponseDTO>>> RefreshToken([FromBody] JwtRefreshDTO jwtRefreshDto)
+    public async Task<ActionResult<ApiResponse<JwtResponseDTO>>> RefreshToken([FromBody] JwtRefreshDTO jwtRefreshDto, CancellationToken ct)
     {
-        var result = await _authService.RefreshTokenAsync(jwtRefreshDto.RefreshToken);
+        var result = await _authService.RefreshTokenAsync(jwtRefreshDto.RefreshToken, ct);
 
         return result.Match(
             onSuccess: refresh => _mapper.Map<JwtResponseDTO>(refresh).ToApiResponse(this),

@@ -4,10 +4,10 @@ namespace Sozeris.Server.Domain.Interfaces.Repositories;
 
 public interface IUserRepository
 {
-    Task<IReadOnlyList<User>> GetAllUsersAsync();
-    Task<User?> GetUserByIdAsync(int userId);
-    Task<User?> GetUserByLoginAsync(string login);
-    Task<User> CreateUserAsync(User user);
-    Task<User> UpdateUserAsync(User user);
-    Task DeleteUserByIdAsync(User user);
+    Task<IReadOnlyList<User>> GetAllUsersAsync(CancellationToken ct);
+    Task<User?> GetUserByIdAsync(int userId, CancellationToken ct);
+    Task<User?> GetUserByLoginAsync(string login, CancellationToken ct);
+    Task<User> CreateUserAsync(User user, CancellationToken ct);
+    Task<User> UpdateUserAsync(User user, CancellationToken ct);
+    Task DeleteUserByIdAsync(User user, CancellationToken ct);
 }
