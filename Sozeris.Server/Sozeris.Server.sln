@@ -2,11 +2,19 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sozeris.Server.Data", "Sozeris.Server.Data\Sozeris.Server.Data.csproj", "{D3A913B6-51F1-459B-9D7D-D672D0DCB49E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sozeris.Server.Models", "Sozeris.Server.Models\Sozeris.Server.Models.csproj", "{7CFF9504-53AD-4D0A-A4E9-7A5347C88E95}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sozeris.Server.Domain", "Sozeris.Server.Domain\Sozeris.Server.Domain.csproj", "{7CFF9504-53AD-4D0A-A4E9-7A5347C88E95}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sozeris.Server.Logic", "Sozeris.Server.Logic\Sozeris.Server.Logic.csproj", "{DC87513D-E351-49BD-B018-1CD00D9B638F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sozeris.Server.Api", "Sozeris.Server.Api\Sozeris.Server.Api.csproj", "{79AD0480-8989-4329-873D-99506CA80CCF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{EC3FD4BF-2993-4BC5-AF8F-4339378A42A7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{4039CD4F-8CA2-40BA-B918-FF9ACECBE232}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{99AC5109-54CC-4242-A845-6838136230A1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{AC9AC1A1-9772-47D0-AA24-BCC79EFBA08F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +38,11 @@ Global
 		{79AD0480-8989-4329-873D-99506CA80CCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79AD0480-8989-4329-873D-99506CA80CCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79AD0480-8989-4329-873D-99506CA80CCF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7CFF9504-53AD-4D0A-A4E9-7A5347C88E95} = {EC3FD4BF-2993-4BC5-AF8F-4339378A42A7}
+		{79AD0480-8989-4329-873D-99506CA80CCF} = {99AC5109-54CC-4242-A845-6838136230A1}
+		{D3A913B6-51F1-459B-9D7D-D672D0DCB49E} = {4039CD4F-8CA2-40BA-B918-FF9ACECBE232}
+		{DC87513D-E351-49BD-B018-1CD00D9B638F} = {EC3FD4BF-2993-4BC5-AF8F-4339378A42A7}
 	EndGlobalSection
 EndGlobal
