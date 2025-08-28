@@ -7,12 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Sozeris.Server.Data\Sozeris.Server.Data.csproj" />
-      <ProjectReference Include="..\Sozeris.Server.Models\Sozeris.Server.Models.csproj" />
+      <ProjectReference Include="..\Sozeris.Server.Domain\Sozeris.Server.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Interfaces\" />
     </ItemGroup>
 
 </Project>

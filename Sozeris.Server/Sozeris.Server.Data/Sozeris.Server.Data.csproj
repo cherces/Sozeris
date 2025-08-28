@@ -8,11 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Bogus" Version="35.5.0" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.18" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Sozeris.Server.Models\Sozeris.Server.Models.csproj" />
+      <ProjectReference Include="..\Sozeris.Server.Domain\Sozeris.Server.Domain.csproj" />
     </ItemGroup>
 
 </Project>
