@@ -2,11 +2,12 @@ using Sozeris.Server.Domain.Enums;
 
 namespace Sozeris.Server.Api.DTO.User;
 
-public record UserResponseDTO
+public record UserResponseDto
 (
     int Id,
     string Login,
     UserRole Role,
     string Phone,
-    string Address
+    string Address,
+    bool IsActive
 );

@@ -9,9 +9,9 @@ public class SubscriptionProfile : Profile
 {
     public SubscriptionProfile()
     {
-        CreateMap<Subscription, SubscriptionResponseDTO>();
+        CreateMap<Subscription, SubscriptionResponseDto>();
         
-        CreateMap<SubscriptionCreateDTO, Subscription>()
+        CreateMap<SubscriptionCreateDto, Subscription>()
             .ForMember(dest => dest.Id, 
                 opt => opt.Ignore())
             .ForMember(dest => dest.Orders, 

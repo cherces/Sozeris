@@ -1,6 +1,6 @@
 namespace Sozeris.Server.Api.DTO.Auth;
 
-public record JwtRequestDTO
+public record JwtRequestDto
 (
     string Login,
     string Password,

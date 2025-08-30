@@ -41,8 +41,7 @@ public class ProductService : IProductService
         var existing = await _productRepository.GetProductByIdAsync(productId, ct);
         if (existing is null) return Result<Product>.Fail(DomainError.NotFound("Product", productId));
 
-        existing.CloneFrom(product);
-        var updateProduct = await _productRepository.UpdateProductAsync(existing, ct);
+        var updateProduct = await _productRepository.UpdateProductAsync(product, ct);
         
         return Result<Product>.Ok(updateProduct);
     }

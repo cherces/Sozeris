@@ -22,44 +22,55 @@ public class SubscriptionsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<List<SubscriptionResponseDTO>>>> GetAllSubscriptions(CancellationToken ct)
+    public async Task<ActionResult<ApiResponse<List<SubscriptionResponseDto>>>> GetAllSubscriptions(CancellationToken ct)
     {
         var subscriptions = await _subscriptionService.GetAllSubscriptionsAsync(ct);
-        var dto = _mapper.Map<List<SubscriptionResponseDTO>>(subscriptions);
+        var dto = _mapper.Map<List<SubscriptionResponseDto>>(subscriptions);
         
-        return Ok(ApiResponse<List<SubscriptionResponseDTO>>.Ok(dto));
+        return Ok(ApiResponse<List<SubscriptionResponseDto>>.Ok(dto));
     }
 
     [HttpGet("{subscriptionId:int}")]
-    public async Task<ActionResult<ApiResponse<SubscriptionResponseDTO>>> GetSubscriptionById(int subscriptionId, CancellationToken ct)
+    public async Task<ActionResult<ApiResponse<SubscriptionResponseDto>>> GetSubscriptionById(int subscriptionId, CancellationToken ct)
     {
         var result = await _subscriptionService.GetSubscriptionByIdAsync(subscriptionId, ct);
+        
+        if (result.IsSuccess)
+            return _mapper.Map<SubscriptionResponseDto>(result.Value).ToApiResponse();
 
-        return result.Match(
-            onSuccess: subscription => _mapper.Map<SubscriptionResponseDTO>(subscription).ToApiResponse(this),
-            onFailure: error => error.ToApiResponse<SubscriptionResponseDTO>(this)
-        );
+        return result.Error.ToApiResponse<SubscriptionResponseDto>(HttpContext);
     }
 
     [HttpGet("user/{userId:int}")]
-    public async Task<ActionResult<ApiResponse<List<SubscriptionResponseDTO>>>> GetSubscriptionsByUserId(int userId, CancellationToken ct)
+    public async Task<ActionResult<ApiResponse<List<SubscriptionResponseDto>>>> GetSubscriptionsByUserId(int userId, CancellationToken ct)
     {
         var subscriptions = await _subscriptionService.GetSubscriptionsByUserIdAsync(userId, ct);
         
-        var dto = _mapper.Map<List<SubscriptionResponseDTO>>(subscriptions);
+        var dto = _mapper.Map<List<SubscriptionResponseDto>>(subscriptions);
         
-        return Ok(ApiResponse<List<SubscriptionResponseDTO>>.Ok(dto));
+        return Ok(ApiResponse<List<SubscriptionResponseDto>>.Ok(dto));
     }
 
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<SubscriptionResponseDTO>>> AddSubscription([FromBody] SubscriptionCreateDTO subscriptionDto, CancellationToken ct)
+    public async Task<ActionResult<ApiResponse<SubscriptionResponseDto>>> AddSubscription([FromBody] SubscriptionCreateDto subscriptionDto, CancellationToken ct)
     {
         var subscription = _mapper.Map<Subscription>(subscriptionDto);
         var result = await _subscriptionService.AddSubscriptionAsync(subscription, ct);
+        
+        if (result.IsSuccess)
+            return _mapper.Map<SubscriptionResponseDto>(result.Value).ToApiResponse();
 
-        return result.Match(
-            onSuccess: created => _mapper.Map<SubscriptionResponseDTO>(created).ToApiResponse(this),
-            onFailure: error => error.ToApiResponse<SubscriptionResponseDTO>(this)
-        );
+        return result.Error.ToApiResponse<SubscriptionResponseDto>(HttpContext);
+    }
+    
+    [HttpPut("{id:int}/toggleActive")]
+    public async Task<ActionResult<ApiResponse>> ToggleSubscriptionActive(int id, CancellationToken ct)
+    {
+        var result = await _subscriptionService.ToggleSubscriptionActiveAsync(id, ct);
+
+        if (result.IsSuccess)
+            return ApiResponse.Ok();
+        
+        return result.Error.ToApiResponse(HttpContext);
     }
 }

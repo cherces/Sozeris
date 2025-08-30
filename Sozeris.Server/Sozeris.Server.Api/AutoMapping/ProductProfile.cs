@@ -8,22 +8,23 @@ public class ProductProfile : Profile
 {
     public ProductProfile()
     {
-        CreateMap<ProductCreateDTO, Product>()
+        CreateMap<ProductCreateDto, Product>()
             .ForMember(dest => dest.Image, 
                 opt => opt.MapFrom(src => Convert.FromBase64String(src.ImageBase64)));
 
-        CreateMap<ProductUpdateDTO, Product>()
+        CreateMap<ProductUpdateDto, Product>()
             .ForMember(dest => dest.Image,
                 opt => opt.MapFrom(src => string.IsNullOrEmpty(src.ImageBase64) 
                     ? null 
                     : Convert.FromBase64String(src.ImageBase64)));
 
-        CreateMap<Product, ProductResponseDTO>()
-            .ConstructUsing(src => new ProductResponseDTO(
+        CreateMap<Product, ProductResponseDto>()
+            .ConstructUsing(src => new ProductResponseDto(
                 src.Id,
                 src.Name,
                 src.Price,
-                null // ImageBase64 всегда null(пока что)
+                null, // ImageBase64 всегда null(пока что)
+                src.IsActive
             ));
     }
 }

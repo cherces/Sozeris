@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Sozeris.Server.Api.DTO.Product;
 using Sozeris.Server.Api.Models.Common;
 using Sozeris.Server.Domain.Entities;
-using Sozeris.Server.Logic.Common;
 using Sozeris.Server.Logic.Interfaces.Services;
 
 namespace Sozeris.Server.Api.Controllers;
@@ -22,58 +21,58 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<List<ProductResponseDTO>>>> GetAllProducts(CancellationToken ct)
+    public async Task<ActionResult<ApiResponse<List<ProductResponseDto>>>> GetAllProducts(CancellationToken ct)
     {
         var products = await _productService.GetAllProductsAsync(ct);
-        var dto = _mapper.Map<List<ProductResponseDTO>>(products);
+        var dto = _mapper.Map<List<ProductResponseDto>>(products);
         
-        return Ok(ApiResponse<List<ProductResponseDTO>>.Ok(dto));
+        return Ok(ApiResponse<List<ProductResponseDto>>.Ok(dto));
     }
 
     [HttpGet("{productId:int}")]
-    public async Task<ActionResult<ApiResponse<ProductResponseDTO>>> GetProductById(int productId, CancellationToken ct)
+    public async Task<ActionResult<ApiResponse<ProductResponseDto>>> GetProductById(int productId, CancellationToken ct)
     {
         var result = await _productService.GetProductByIdAsync(productId, ct);
 
-        return result.Match(
-            onSuccess: product => _mapper.Map<ProductResponseDTO>(product).ToApiResponse(this),
-            onFailure: error => error.ToApiResponse<ProductResponseDTO>(this)
-        );
+        if (result.IsSuccess)
+            return _mapper.Map<ApiResponse<ProductResponseDto>>(result.Value);
+        
+        return result.Error.ToApiResponse<ProductResponseDto>(HttpContext);
     }
 
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<ProductResponseDTO>>> AddProduct([FromBody] ProductCreateDTO productDto, CancellationToken ct)
+    public async Task<ActionResult<ApiResponse<ProductResponseDto>>> AddProduct([FromBody] ProductCreateDto productDto, CancellationToken ct)
     {
         var product = _mapper.Map<Product>(productDto);
         var result = await _productService.AddProductAsync(product, ct);
 
-        return result.Match(
-            onSuccess: created => _mapper.Map<ProductResponseDTO>(created).ToApiResponse(this),
-            onFailure: error => error.ToApiResponse<ProductResponseDTO>(this)
-        );
+        if (result.IsSuccess)
+            return _mapper.Map<ApiResponse<ProductResponseDto>>(result.Value);
+        
+        return result.Error.ToApiResponse<ProductResponseDto>(HttpContext);
     }
 
     [HttpPut("{productId:int}")]
-    public async Task<ActionResult<ApiResponse>> UpdateProduct(int productId, [FromBody] ProductUpdateDTO productDto, CancellationToken ct)
+    public async Task<ActionResult<ApiResponse>> UpdateProduct(int productId, [FromBody] ProductUpdateDto productDto, CancellationToken ct)
     {
         var product = _mapper.Map<Product>(productDto);
         product.Id = productId;
         var result = await _productService.UpdateProductAsync(productId, product, ct);
 
-        return result.Match(
-            onSuccess: () => this.ToApiResponse(),
-            onFailure: error => error.ToApiResponse(this)
-        );
+        if (result.IsSuccess)
+            return ApiResponse.Ok();
+        
+        return result.Error.ToApiResponse(HttpContext);
     }
 
     [HttpDelete("{productId:int}")]
     public async Task<ActionResult<ApiResponse>> DeleteProductById(int productId, CancellationToken ct)
     {
         var result = await _productService.DeleteProductByIdAsync(productId, ct);
-
-        return result.Match(
-            onSuccess: () => this.ToApiResponse(),
-            onFailure: error => error.ToApiResponse(this)
-        );
+        
+        if (result.IsSuccess)
+            return ApiResponse.Ok();
+        
+        return result.Error.ToApiResponse(HttpContext);
     }
 }

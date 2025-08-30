@@ -21,14 +21,14 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("login")]
-    public async Task<ActionResult<ApiResponse<JwtResponseDTO>>> Login([FromBody] JwtRequestDTO jwtDto, CancellationToken ct)
+    public async Task<ActionResult<ApiResponse<JwtResponseDto>>> Login([FromBody] JwtRequestDto jwtDto, CancellationToken ct)
     {
         var result = await _authService.LoginAsync(jwtDto.Login, jwtDto.Password, ct);
+        
+        if (result.IsSuccess)
+            return _mapper.Map<JwtResponseDto>(result.Value).ToApiResponse();
 
-        return result.Match(
-            onSuccess: created => _mapper.Map<JwtResponseDTO>(created).ToApiResponse(this),
-            onFailure: error => error.ToApiResponse<JwtResponseDTO>(this)
-        );
+        return result.Error.ToApiResponse<JwtResponseDto>(HttpContext);
     }
     
     [HttpPost("logout")]
@@ -36,20 +36,20 @@ public class AuthController : ControllerBase
     {
         var result = await _authService.LogoutAsync(refreshToken, ct);
 
-        return result.Match(
-            onSuccess: () => this.ToApiResponse(),
-            onFailure: error => error.ToApiResponse(this)
-        );
+        if (result.IsSuccess)
+            return ApiResponse.Ok();
+        
+        return result.Error.ToApiResponse(HttpContext);
     }
 
     [HttpPost("refreshToken")]
-    public async Task<ActionResult<ApiResponse<JwtResponseDTO>>> RefreshToken([FromBody] JwtRefreshDTO jwtRefreshDto, CancellationToken ct)
+    public async Task<ActionResult<ApiResponse<JwtResponseDto>>> RefreshToken([FromBody] JwtRefreshDto jwtRefreshDto, CancellationToken ct)
     {
         var result = await _authService.RefreshTokenAsync(jwtRefreshDto.RefreshToken, ct);
-
-        return result.Match(
-            onSuccess: refresh => _mapper.Map<JwtResponseDTO>(refresh).ToApiResponse(this),
-            onFailure: error => error.ToApiResponse<JwtResponseDTO>(this)
-        );
+        
+        if (result.IsSuccess)
+            return _mapper.Map<JwtResponseDto>(result.Value).ToApiResponse();
+        
+        return result.Error.ToApiResponse<JwtResponseDto>(HttpContext);
     }
 }

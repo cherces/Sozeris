@@ -3,9 +3,9 @@ using Sozeris.Server.Api.DTO.Product;
 
 namespace Sozeris.Server.Api.Validators.Product;
 
-public class ProductCreateDTOValidator : AbstractValidator<ProductCreateDTO>
+public class ProductCreateDtoValidator : AbstractValidator<ProductCreateDto>
 {
-    public ProductCreateDTOValidator()
+    public ProductCreateDtoValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Название продукта обязательно")

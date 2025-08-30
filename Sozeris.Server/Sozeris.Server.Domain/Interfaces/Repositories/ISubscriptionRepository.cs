@@ -8,4 +8,5 @@ public interface ISubscriptionRepository
     Task<Subscription?> GetSubscriptionByIdAsync(int subscriptionId, CancellationToken ct);
     Task<IReadOnlyList<Subscription>> GetSubscriptionsByUserIdAsync(int userId, CancellationToken ct);
     Task<Subscription> AddSubscriptionAsync(Subscription subscription, CancellationToken ct);
+    Task SaveAsync(CancellationToken ct);
 }

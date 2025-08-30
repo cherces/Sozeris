@@ -8,7 +8,7 @@ public class JwtRefreshToken
     public DateTime Expires { get; set; }
     public DateTime Created { get; set; }
     public string? Device { get; set; }
-    public bool IsRevoked { get; set; } = false;
+    public bool IsRevoked { get; set; }
     
     public bool IsExpired => DateTime.UtcNow >= Expires;
     public bool IsActive => !IsRevoked && !IsExpired;

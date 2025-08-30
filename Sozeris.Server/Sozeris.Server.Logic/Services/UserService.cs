@@ -52,8 +52,8 @@ public class UserService : IUserService
         
         if (oldUser == null) return Result<User>.Fail(DomainError.NotFound("User", user.Id));
         
-        oldUser.Password = PasswordHasher.HashPassword(user.Password);
-        var updateUser = await _userRepository.UpdateUserAsync(oldUser, ct);
+        //oldUser.Password = PasswordHasher.HashPassword(user.Password);
+        var updateUser = await _userRepository.UpdateUserAsync(user, ct);
         
         return Result<User>.Ok(updateUser);
     }

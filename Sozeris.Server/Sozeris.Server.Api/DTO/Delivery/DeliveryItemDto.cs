@@ -1,6 +1,6 @@
 namespace Sozeris.Server.Api.DTO.Delivery;
 
-public record DeliveryItemDTO
+public record DeliveryItemDto
 (
     string ProductName,
     int Quantity

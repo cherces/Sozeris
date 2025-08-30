@@ -3,7 +3,7 @@ using Sozeris.Server.Api.DTO.Subscription;
 
 namespace Sozeris.Server.Api.Validators.Subscription;
 
-public class SubscriptionCreateDtoValidator : AbstractValidator<SubscriptionCreateDTO>
+public class SubscriptionCreateDtoValidator : AbstractValidator<SubscriptionCreateDto>
 {
     public SubscriptionCreateDtoValidator()
     {

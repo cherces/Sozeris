@@ -2,12 +2,12 @@ using Sozeris.Server.Api.DTO.Order;
 
 namespace Sozeris.Server.Api.DTO.Subscription;
 
-public record SubscriptionResponseDTO
+public record SubscriptionResponseDto
 (
     int Id,
     int UserId,
     DateTime StartDate,
     DateTime EndDate,
     bool IsActive,
-    List<OrderResponseDTO> Orders
+    List<OrderResponseDto> Orders
 );

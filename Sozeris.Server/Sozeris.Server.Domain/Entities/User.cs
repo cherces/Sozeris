@@ -13,6 +13,7 @@ public class User
     public UserRole Role { get; set; } = UserRole.User;
     public string Phone { get; set; } = String.Empty;
     public string Address { get; set; } = String.Empty;
+    public bool IsActive { get; set; }
 
     public List<JwtRefreshToken> JwtRefreshTokens { get; set; } = new();
 }

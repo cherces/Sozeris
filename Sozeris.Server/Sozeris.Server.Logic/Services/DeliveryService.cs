@@ -18,7 +18,7 @@ public class DeliveryService : IDeliveryService
         _deliveryHistoryRepository = deliveryHistoryRepository;
     }
 
-    public async Task<IReadOnlyList<Delivery>> GetDeliveriesForDayAsync(CancellationToken ct)
+    public async Task<IReadOnlyList<Delivery>> GetDeliveriesTodayAsync(CancellationToken ct)
     {
         var today = DateTime.UtcNow.Date;
 

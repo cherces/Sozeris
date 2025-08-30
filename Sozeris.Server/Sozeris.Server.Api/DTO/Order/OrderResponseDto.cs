@@ -1,6 +1,6 @@
 namespace Sozeris.Server.Api.DTO.Order;
 
-public record OrderResponseDTO
+public record OrderResponseDto
 (
     int Id,
     int ProductId,

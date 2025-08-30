@@ -4,9 +4,9 @@ using Sozeris.Server.Domain.Enums;
 
 namespace Sozeris.Server.Api.Validators.Delivery;
 
-public class DeliveryMarkRequestDTOValidator : AbstractValidator<DeliveryMarkRequestDTO>
+public class DeliveryMarkRequestDtoValidator : AbstractValidator<DeliveryMarkRequestDto>
 {
-    public DeliveryMarkRequestDTOValidator()
+    public DeliveryMarkRequestDtoValidator()
     {
         RuleFor(x => x.Status).IsInEnum();
 

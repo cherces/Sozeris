@@ -3,9 +3,9 @@ using Sozeris.Server.Api.DTO.Order;
 
 namespace Sozeris.Server.Api.Validators.Order;
 
-public class OrderCreateDTOValidator : AbstractValidator<OrderCreateDTO>
+public class OrderCreateDtoValidator : AbstractValidator<OrderCreateDto>
 {
-    public OrderCreateDTOValidator()
+    public OrderCreateDtoValidator()
     {
         RuleFor(x => x.ProductId)
             .GreaterThan(0).WithMessage("Некорректный Id продукта");

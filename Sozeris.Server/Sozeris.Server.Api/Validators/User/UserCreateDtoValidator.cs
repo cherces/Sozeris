@@ -3,9 +3,9 @@ using Sozeris.Server.Api.DTO.User;
 
 namespace Sozeris.Server.Api.Validators.User;
 
-public class UserCreateDTOValidator : AbstractValidator<UserCreateDTO>
+public class UserCreateDtoValidator : AbstractValidator<UserCreateDto>
 {
-    public UserCreateDTOValidator()
+    public UserCreateDtoValidator()
     {
         RuleFor(x => x.Login)
             .NotEmpty().WithMessage("Логин обязателен")
