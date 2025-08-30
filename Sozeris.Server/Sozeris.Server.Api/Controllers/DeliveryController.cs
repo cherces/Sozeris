@@ -9,12 +9,12 @@ namespace Sozeris.Server.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class DeliveryController : ControllerBase
+public class DeliveriesController : ControllerBase
 {
     private readonly IDeliveryService _deliveryService;
     private readonly IMapper _mapper;
 
-    public DeliveryController(IDeliveryService deliveryService, IMapper mapper)
+    public DeliveriesController(IDeliveryService deliveryService, IMapper mapper)
     {
         _deliveryService = deliveryService;
         _mapper = mapper;

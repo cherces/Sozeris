@@ -42,14 +42,13 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<ProductResponseDTO>>> CreateProduct([FromBody] ProductCreateDTO productDto, CancellationToken ct)
+    public async Task<ActionResult<ApiResponse<ProductResponseDTO>>> AddProduct([FromBody] ProductCreateDTO productDto, CancellationToken ct)
     {
         var product = _mapper.Map<Product>(productDto);
         var result = await _productService.AddProductAsync(product, ct);
 
         return result.Match(
-            onSuccess: created => _mapper.Map<ProductResponseDTO>(created)
-                .ToCreatedAt(this, nameof(GetProductById), new { productId = created.Id }),
+            onSuccess: created => _mapper.Map<ProductResponseDTO>(created).ToApiResponse(this),
             onFailure: error => error.ToApiResponse<ProductResponseDTO>(this)
         );
     }

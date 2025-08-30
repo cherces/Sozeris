@@ -21,7 +21,7 @@ public class UsersController : ControllerBase
         _mapper = mapper;
     }
     
-    [HttpGet("all")]
+    [HttpGet]
     public async Task<ActionResult<ApiResponse<List<UserResponseDTO>>>> GetAllUsers(CancellationToken ct)
     {
         var users = await _userService.GetAllUsersAsync(ct);
@@ -42,19 +42,18 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<UserResponseDTO>>> CreateUser([FromBody] UserCreateDTO userDto, CancellationToken ct)
+    public async Task<ActionResult<ApiResponse<UserResponseDTO>>> AddUser([FromBody] UserCreateDTO userDto, CancellationToken ct)
     {
         var user = _mapper.Map<User>(userDto);
-        var result = await _userService.CreateUserAsync(user, ct);
+        var result = await _userService.AddUserAsync(user, ct);
 
         return result.Match(
-            onSuccess: created => _mapper.Map<UserResponseDTO>(created)
-                .ToCreatedAt(this, nameof(GetUserById), new { id = user.Id }),
+            onSuccess: created => _mapper.Map<UserResponseDTO>(created).ToApiResponse(this),
             onFailure: error => error.ToApiResponse<UserResponseDTO>(this)
         );
     }
 
-    [HttpPut]
+    [HttpPut("{userId:int}")]
     public async Task<ActionResult<ApiResponse>> UpdateUser(int userId, [FromBody] UserUpdateDTO userDto, CancellationToken ct)
     {
         var user = _mapper.Map<User>(userDto);

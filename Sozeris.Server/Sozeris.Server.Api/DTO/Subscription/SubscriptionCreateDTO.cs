@@ -7,5 +7,6 @@ public record SubscriptionCreateDTO
     int UserId,
     DateTime StartDate,
     DateTime EndDate,
+    bool IsActive,
     List<OrderCreateDTO> Orders
 );
