@@ -69,7 +69,7 @@ public class SubscriptionsController : ControllerBase
         var result = await _subscriptionService.ToggleSubscriptionActiveAsync(id, ct);
 
         if (result.IsSuccess)
-            return ApiResponse.Ok();
+            return Ok(ApiResponse.Ok());
         
         return result.Error.ToApiResponse(HttpContext);
     }

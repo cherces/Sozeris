@@ -37,7 +37,7 @@ public class AuthController : ControllerBase
         var result = await _authService.LogoutAsync(refreshToken, ct);
 
         if (result.IsSuccess)
-            return ApiResponse.Ok();
+            return Ok(ApiResponse.Ok());
         
         return result.Error.ToApiResponse(HttpContext);
     }

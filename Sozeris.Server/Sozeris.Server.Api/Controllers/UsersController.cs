@@ -61,7 +61,7 @@ public class UsersController : ControllerBase
         var result = await _userService.UpdateUserAsync(user, ct);
         
         if (result.IsSuccess)
-            return ApiResponse.Ok();
+            return Ok(ApiResponse.Ok());
         
         return result.Error.ToApiResponse(HttpContext);
     }
@@ -72,7 +72,7 @@ public class UsersController : ControllerBase
         var result = await _userService.DeleteUserByIdAsync(userId, ct);
         
         if (result.IsSuccess)
-            return ApiResponse.Ok();
+            return Ok(ApiResponse.Ok());
         
         return result.Error.ToApiResponse(HttpContext);
     }

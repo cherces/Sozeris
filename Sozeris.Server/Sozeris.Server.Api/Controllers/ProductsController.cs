@@ -35,7 +35,7 @@ public class ProductsController : ControllerBase
         var result = await _productService.GetProductByIdAsync(productId, ct);
 
         if (result.IsSuccess)
-            return _mapper.Map<ApiResponse<ProductResponseDto>>(result.Value);
+            return _mapper.Map<ProductResponseDto>(result.Value).ToApiResponse();
         
         return result.Error.ToApiResponse<ProductResponseDto>(HttpContext);
     }
@@ -60,7 +60,7 @@ public class ProductsController : ControllerBase
         var result = await _productService.UpdateProductAsync(productId, product, ct);
 
         if (result.IsSuccess)
-            return ApiResponse.Ok();
+            return Ok(ApiResponse.Ok());
         
         return result.Error.ToApiResponse(HttpContext);
     }
@@ -71,7 +71,7 @@ public class ProductsController : ControllerBase
         var result = await _productService.DeleteProductByIdAsync(productId, ct);
         
         if (result.IsSuccess)
-            return ApiResponse.Ok();
+            return Ok(ApiResponse.Ok());
         
         return result.Error.ToApiResponse(HttpContext);
     }

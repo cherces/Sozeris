@@ -35,7 +35,7 @@ public class DeliveriesController : ControllerBase
         var result = await _deliveryService.MarkDeliveryAsync(subscriptionId, dto.Status, dto.Reason, ct);
 
         if (result.IsSuccess)
-            return ApiResponse.Ok();
+            return Ok(ApiResponse.Ok());
 
         return result.Error.ToApiResponse(HttpContext);
     }
