@@ -23,7 +23,7 @@ public class ProductProfile : Profile
                 src.Id,
                 src.Name,
                 src.Price,
-                null, // ImageBase64 всегда null(пока что)
+                "",
                 src.IsActive
             ));
     }

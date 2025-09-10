@@ -24,7 +24,11 @@ public static class DbSeeder
                 new Product { Name = "Черный хлеб", Price = 30, Image = Array.Empty<byte>(), IsActive = true },
                 new Product { Name = "Батон нарезной", Price = 28, Image = Array.Empty<byte>(), IsActive = true },
                 new Product { Name = "Хлеб с отрубями", Price = 35, Image = Array.Empty<byte>(), IsActive = true },
-                new Product { Name = "Булочка ржаная", Price = 15, Image = Array.Empty<byte>(), IsActive = true }
+                new Product { Name = "Булочка ржаная", Price = 15, Image = Array.Empty<byte>(), IsActive = true },
+                new Product { Name = "Хлеб синий", Price = 35, Image = Array.Empty<byte>(), IsActive = true },
+                new Product { Name = "Хлеб красный", Price = 35, Image = Array.Empty<byte>(), IsActive = true },
+                new Product { Name = "Хлеб зеленый", Price = 35, Image = Array.Empty<byte>(), IsActive = true },
+                new Product { Name = "Хлеб желтый", Price = 35, Image = Array.Empty<byte>(), IsActive = true }
             };
 
             context.Products.AddRange(products);
@@ -52,14 +56,14 @@ public static class DbSeeder
         if (!context.Subscriptions.Any())
         {
             var subscriptions = new List<Subscription>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 50; i++)
             {
                 var user = faker.PickRandom(usersList.Where(u => u.Role == UserRole.User));
                 subscriptions.Add(new Subscription
                 {
                     UserId = user.Id,
-                    StartDate = DateTime.UtcNow.AddDays(-faker.Random.Int(0, 200)),
-                    EndDate = DateTime.UtcNow.AddDays(faker.Random.Int(30, 365)),
+                    StartDate = DateTime.UtcNow.AddDays(-faker.Random.Int(0, 90)),
+                    EndDate = DateTime.UtcNow.AddDays(faker.Random.Int(30, 60)),
                     IsActive = faker.Random.Bool()
                 });
             }
@@ -73,7 +77,7 @@ public static class DbSeeder
         if (!context.Orders.Any())
         {
             var orders = new List<Order>();
-            int ordersCount = faker.Random.Int(30, 50);
+            int ordersCount = faker.Random.Int(120, 200);
 
             for (int i = 0; i < ordersCount; i++)
             {
