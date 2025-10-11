@@ -24,7 +24,8 @@ public class ProductProfile : Profile
                 src.Name,
                 src.Price,
                 "",
-                src.IsActive
+                src.IsActive,
+                src.Description
             ));
     }
 }

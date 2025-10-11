@@ -20,15 +20,15 @@ public static class DbSeeder
         {
             var products = new List<Product>
             {
-                new Product { Name = "Белый хлеб", Price = 25, Image = Array.Empty<byte>(), IsActive = true },
-                new Product { Name = "Черный хлеб", Price = 30, Image = Array.Empty<byte>(), IsActive = true },
-                new Product { Name = "Батон нарезной", Price = 28, Image = Array.Empty<byte>(), IsActive = true },
-                new Product { Name = "Хлеб с отрубями", Price = 35, Image = Array.Empty<byte>(), IsActive = true },
-                new Product { Name = "Булочка ржаная", Price = 15, Image = Array.Empty<byte>(), IsActive = true },
-                new Product { Name = "Хлеб синий", Price = 35, Image = Array.Empty<byte>(), IsActive = true },
-                new Product { Name = "Хлеб красный", Price = 35, Image = Array.Empty<byte>(), IsActive = true },
-                new Product { Name = "Хлеб зеленый", Price = 35, Image = Array.Empty<byte>(), IsActive = true },
-                new Product { Name = "Хлеб желтый", Price = 35, Image = Array.Empty<byte>(), IsActive = true }
+                new Product { Name = "Белый хлеб", Price = 25 },
+                new Product { Name = "Черный хлеб", Price = 30 },
+                new Product { Name = "Батон нарезной", Price = 28 },
+                new Product { Name = "Хлеб с отрубями", Price = 35 },
+                new Product { Name = "Булочка ржаная", Price = 15 },
+                new Product { Name = "Хлеб синий", Price = 35 },
+                new Product { Name = "Хлеб красный", Price = 35 },
+                new Product { Name = "Хлеб зеленый", Price = 35 },
+                new Product { Name = "Хлеб желтый", Price = 35 }
             };
 
             context.Products.AddRange(products);
@@ -39,11 +39,11 @@ public static class DbSeeder
         {
             var users = new List<User>
             {
-                new User { Login = "admin", Password = "adminpassword", Salt = "testsalt", Role = UserRole.Admin, Phone = "89161234567", Address = "г. Москва, ул. Пушкина", IsActive = true},
-                new User { Login = "courier1", Password = "password1", Salt = "testsalt", Role = UserRole.Courier, Phone = "89169876543", Address = "г. Москва, ул. Ленина", IsActive = true },
-                new User { Login = "user1", Password = "password2", Salt = "testsalt", Role = UserRole.User, Phone = "89162345678", Address = "г. Москва, ул. Горького", IsActive = true },
-                new User { Login = "user2", Password = "password3", Salt = "testsalt", Role = UserRole.User, Phone = "89163456789", Address = "г. Москва, ул. Чехова", IsActive = true },
-                new User { Login = "user3", Password = "password4", Salt = "testsalt", Role = UserRole.User, Phone = "89164567890", Address = "г. Москва, ул. Толстого", IsActive = true }
+                new User { Login = "admin", Password = "adminpassword", Salt = "testsalt", Role = UserRole.Admin, Phone = "89161234567", Address = "г. Москва, ул. Пушкина, д. 10, кв. 5", IsActive = true},
+                new User { Login = "courier1", Password = "password1", Salt = "testsalt", Role = UserRole.Courier, Phone = "89169876543", Address = "г. Москва, ул. Ленина, д. 10, кв. 7", IsActive = true },
+                new User { Login = "user1", Password = "password2", Salt = "testsalt", Role = UserRole.User, Phone = "89162345678", Address = "г. Москва, ул. Горького, д. 7, кв. 17", IsActive = true },
+                new User { Login = "user2", Password = "password3", Salt = "testsalt", Role = UserRole.User, Phone = "89163456789", Address = "г. Москва, ул. Чехова, д. 5, кв. 3", IsActive = true },
+                new User { Login = "user3", Password = "password4", Salt = "testsalt", Role = UserRole.User, Phone = "89164567890", Address = "г. Москва, ул. Толстого, д. 1, кв. 15", IsActive = true }
             };
 
             context.Users.AddRange(users);

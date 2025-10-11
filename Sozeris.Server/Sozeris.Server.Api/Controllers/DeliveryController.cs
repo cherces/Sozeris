@@ -21,6 +21,7 @@ public class DeliveriesController : ControllerBase
     }
 
     [HttpGet("today")]
+        
     public async Task<ActionResult<ApiResponse<List<DeliveryForDayDto>>>> GetDeliveriesToday(CancellationToken ct)
     {
         var deliveries = await _deliveryService.GetDeliveriesTodayAsync(ct);

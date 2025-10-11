@@ -6,5 +6,6 @@ public record ProductResponseDto
     string Name,
     decimal Price,
     string ImageBase64,
-    bool isActive
+    bool IsActive,
+    string Description
 );
