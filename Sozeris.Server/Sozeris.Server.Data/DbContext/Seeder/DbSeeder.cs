@@ -43,6 +43,9 @@ public static class DbSeeder
                 new User { Login = "courier1", Password = "password1", Salt = "testsalt", Role = UserRole.Courier, Phone = "89169876543", Address = "г. Москва, ул. Ленина, д. 10, кв. 7", IsActive = true },
                 new User { Login = "user1", Password = "password2", Salt = "testsalt", Role = UserRole.User, Phone = "89162345678", Address = "г. Москва, ул. Горького, д. 7, кв. 17", IsActive = true },
                 new User { Login = "user2", Password = "password3", Salt = "testsalt", Role = UserRole.User, Phone = "89163456789", Address = "г. Москва, ул. Чехова, д. 5, кв. 3", IsActive = true },
+                new User { Login = "user20", Password = "password3", Salt = "testsalt", Role = UserRole.User, Phone = "89163456789", Address = "г. Москва, ул. Чехова, д. 5", IsActive = true },
+                new User { Login = "user21", Password = "password3", Salt = "testsalt", Role = UserRole.User, Phone = "89163456789", Address = "г. Москва, ул. Чехова, д. 8", IsActive = true },
+                new User { Login = "user22", Password = "password3", Salt = "testsalt", Role = UserRole.User, Phone = "89163456789", Address = "г. Москва, ул. Чехова, д. 23", IsActive = true },
                 new User { Login = "user3", Password = "password4", Salt = "testsalt", Role = UserRole.User, Phone = "89164567890", Address = "г. Москва, ул. Толстого, д. 1, кв. 15", IsActive = true }
             };
 

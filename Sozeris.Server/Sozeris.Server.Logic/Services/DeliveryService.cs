@@ -37,7 +37,7 @@ public class DeliveryService : IDeliveryService
                     Address = s.User.Address,
                     Date = today,
                     Status = history?.Status ?? DeliveryStatus.Pending,
-                    Reason = history?.Reason ?? "Обратитесь в поддержку",
+                    Reason = history?.Reason,
                     Items = s.Orders.Select(o => new DeliveryItem
                     {
                         ProductName = o.Product.Name,
