@@ -21,60 +21,59 @@ public class UsersController : ControllerBase
         _mapper = mapper;
     }
     
-    [HttpGet("all")]
-    public async Task<ActionResult<ApiResponse<List<UserResponseDTO>>>> GetAllUsers(CancellationToken ct)
+    [HttpGet]
+    public async Task<ActionResult<ApiResponse<List<UserResponseDto>>>> GetAllUsers(CancellationToken ct)
     {
         var users = await _userService.GetAllUsersAsync(ct);
-        var dto  = _mapper.Map<List<UserResponseDTO>>(users);
+        var dto  = _mapper.Map<List<UserResponseDto>>(users);
         
-        return Ok(ApiResponse<List<UserResponseDTO>>.Ok(dto));
+        return Ok(ApiResponse<List<UserResponseDto>>.Ok(dto));
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<ApiResponse<UserResponseDTO>>> GetUserById(int id, CancellationToken ct)
+    [HttpGet("{userId:int}")]
+    public async Task<ActionResult<ApiResponse<UserResponseDto>>> GetUserById(int userId, CancellationToken ct)
     {
-        var result = await _userService.GetUserByIdAsync(id, ct);
+        var result = await _userService.GetUserByIdAsync(userId, ct);
+        
+        if (result.IsSuccess)
+            return _mapper.Map<UserResponseDto>(result.Value).ToApiResponse();
 
-        return result.Match(
-            onSuccess: user => _mapper.Map<UserResponseDTO>(user).ToApiResponse(this),
-            onFailure: error => error.ToApiResponse<UserResponseDTO>(this)
-        );
+        return result.Error.ToApiResponse<UserResponseDto>(HttpContext);
     }
 
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<UserResponseDTO>>> CreateUser([FromBody] UserCreateDTO userDto, CancellationToken ct)
+    public async Task<ActionResult<ApiResponse<UserResponseDto>>> AddUser([FromBody] UserCreateDto userDto, CancellationToken ct)
     {
         var user = _mapper.Map<User>(userDto);
-        var result = await _userService.CreateUserAsync(user, ct);
-
-        return result.Match(
-            onSuccess: created => _mapper.Map<UserResponseDTO>(created)
-                .ToCreatedAt(this, nameof(GetUserById), new { id = user.Id }),
-            onFailure: error => error.ToApiResponse<UserResponseDTO>(this)
-        );
+        var result = await _userService.AddUserAsync(user, ct);
+        
+        if (result.IsSuccess)
+            return _mapper.Map<UserResponseDto>(result.Value).ToApiResponse();
+        
+        return result.Error.ToApiResponse<UserResponseDto>(HttpContext);
     }
 
-    [HttpPut]
-    public async Task<ActionResult<ApiResponse>> UpdateUser(int userId, [FromBody] UserUpdateDTO userDto, CancellationToken ct)
+    [HttpPut("{userId:int}")]
+    public async Task<ActionResult<ApiResponse>> UpdateUser(int userId, [FromBody] UserUpdateDto userDto, CancellationToken ct)
     {
         var user = _mapper.Map<User>(userDto);
         user.Id = userId;
         var result = await _userService.UpdateUserAsync(user, ct);
-
-        return result.Match(
-            onSuccess: () => this.ToApiResponse(),
-            onFailure: error => error.ToApiResponse(this)
-        );
+        
+        if (result.IsSuccess)
+            return Ok(ApiResponse.Ok());
+        
+        return result.Error.ToApiResponse(HttpContext);
     }
 
     [HttpDelete("{userId:int}")]
     public async Task<ActionResult<ApiResponse>> DeleteUserById(int userId, CancellationToken ct)
     {
         var result = await _userService.DeleteUserByIdAsync(userId, ct);
-
-        return result.Match(
-            onSuccess: () => this.ToApiResponse(),
-            onFailure: error => error.ToApiResponse(this)
-        );
+        
+        if (result.IsSuccess)
+            return Ok(ApiResponse.Ok());
+        
+        return result.Error.ToApiResponse(HttpContext);
     }
 }

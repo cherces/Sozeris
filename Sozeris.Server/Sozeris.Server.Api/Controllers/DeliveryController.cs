@@ -9,34 +9,34 @@ namespace Sozeris.Server.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class DeliveryController : ControllerBase
+public class DeliveriesController : ControllerBase
 {
     private readonly IDeliveryService _deliveryService;
     private readonly IMapper _mapper;
 
-    public DeliveryController(IDeliveryService deliveryService, IMapper mapper)
+    public DeliveriesController(IDeliveryService deliveryService, IMapper mapper)
     {
         _deliveryService = deliveryService;
         _mapper = mapper;
     }
 
     [HttpGet("today")]
-    public async Task<ActionResult<ApiResponse<List<DeliveryForDayDTO>>>> GetDeliveriesForDay(CancellationToken ct)
+    public async Task<ActionResult<ApiResponse<List<DeliveryForDayDto>>>> GetDeliveriesToday(CancellationToken ct)
     {
-        var deliveries = await _deliveryService.GetDeliveriesForDayAsync(ct);
-        var dto  = _mapper.Map<List<DeliveryForDayDTO>>(deliveries);
+        var deliveries = await _deliveryService.GetDeliveriesTodayAsync(ct);
+        var dto  = _mapper.Map<List<DeliveryForDayDto>>(deliveries);
         
-        return Ok(ApiResponse<List<DeliveryForDayDTO>>.Ok(dto));
+        return Ok(ApiResponse<List<DeliveryForDayDto>>.Ok(dto));
     }
     
     [HttpPost("{subscriptionId}/status")]
-    public async Task<ActionResult<ApiResponse>> MarkDelivery(int subscriptionId, [FromBody] DeliveryMarkRequestDTO request, CancellationToken ct)
+    public async Task<ActionResult<ApiResponse>> MarkDelivery(int subscriptionId, [FromBody] DeliveryMarkRequestDto dto, CancellationToken ct)
     {
-        var result = await _deliveryService.MarkDeliveryAsync(subscriptionId, request.Status, request.Reason, ct);
+        var result = await _deliveryService.MarkDeliveryAsync(subscriptionId, dto.Status, dto.Reason, ct);
 
-        return result.Match(
-            onSuccess: () => this.ToApiResponse(),
-            onFailure: error => error.ToApiResponse(this)
-        );
+        if (result.IsSuccess)
+            return Ok(ApiResponse.Ok());
+
+        return result.Error.ToApiResponse(HttpContext);
     }
 }

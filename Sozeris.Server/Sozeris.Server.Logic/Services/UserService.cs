@@ -38,10 +38,10 @@ public class UserService : IUserService
         return Result<User>.Ok(user);
     }
     
-    public async Task<Result<User>> CreateUserAsync(User user, CancellationToken ct)
+    public async Task<Result<User>> AddUserAsync(User user, CancellationToken ct)
     {
         user.Password = PasswordHasher.HashPassword(user.Password);
-        var newUser = await _userRepository.CreateUserAsync(user, ct);
+        var newUser = await _userRepository.AddUserAsync(user, ct);
         
         return Result<User>.Ok(newUser);
     }
@@ -52,8 +52,8 @@ public class UserService : IUserService
         
         if (oldUser == null) return Result<User>.Fail(DomainError.NotFound("User", user.Id));
         
-        oldUser.Password = PasswordHasher.HashPassword(user.Password);
-        var updateUser = await _userRepository.UpdateUserAsync(oldUser, ct);
+        //oldUser.Password = PasswordHasher.HashPassword(user.Password);
+        var updateUser = await _userRepository.UpdateUserAsync(user, ct);
         
         return Result<User>.Ok(updateUser);
     }

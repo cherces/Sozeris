@@ -42,4 +42,16 @@ public class SubscriptionService : ISubscriptionService
         
         return Result<Subscription>.Ok(subscription);
     }
+
+    public async Task<Result> ToggleSubscriptionActiveAsync(int subscriptionId, CancellationToken ct)
+    {
+        var subscription = await _subscriptionRepository.GetSubscriptionByIdAsync(subscriptionId, ct);
+        if (subscription == null) return Result.Fail(DomainError.NotFound("Subscription", subscriptionId));
+        
+        subscription.IsActive = !subscription.IsActive;
+        
+        await _subscriptionRepository.SaveAsync(ct);
+        
+        return Result.Ok();
+    }
 }

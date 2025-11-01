@@ -9,4 +9,5 @@ public interface ISubscriptionService
     Task<Result<Subscription>> GetSubscriptionByIdAsync(int subscriptionId, CancellationToken ct);
     Task<IReadOnlyList<Subscription>> GetSubscriptionsByUserIdAsync(int userId, CancellationToken ct);
     Task<Result<Subscription>> AddSubscriptionAsync(Subscription subscription, CancellationToken ct);
+    Task<Result> ToggleSubscriptionActiveAsync(int subscriptionId, CancellationToken ct);
 }

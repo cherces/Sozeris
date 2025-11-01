@@ -5,36 +5,25 @@ namespace Sozeris.Server.Api.Models.Common;
 
 public static class ApiResponseExtensions
 {
-    public static ActionResult<ApiResponse> ToApiResponse(this ControllerBase controller)
+    
+    public static ActionResult<ApiResponse<T>> ToApiResponse<T>(this T dto)
     {
-        return controller.Ok(ApiResponse.Ok());
+        return new ObjectResult(ApiResponse<T>.Ok(dto));
+    }
+    
+    public static ActionResult<ApiResponse> ToApiResponse(this DomainError error, HttpContext httpContext)
+    {
+        return new ObjectResult(ApiResponse.Fail(error, httpContext))
+        {
+            StatusCode = BuildProblemDetails.MapStatusCode(error.Type)
+        };
     }
 
-    public static ActionResult<ApiResponse> ToApiResponse(
-        this DomainError error, ControllerBase controller)
+    public static ActionResult<ApiResponse<T>> ToApiResponse<T>(this DomainError error, HttpContext httpContext)
     {
-        return controller.StatusCode(
-            BuildProblemDetails.MapStatusCode(error.Type),
-            ApiResponse.Fail(error, controller.HttpContext));
-    }
-
-    public static ActionResult<ApiResponse<T>> ToApiResponse<T>(
-        this T dto, ControllerBase controller)
-    {
-        return controller.Ok(ApiResponse<T>.Ok(dto));
-    }
-
-    public static ActionResult<ApiResponse<T>> ToApiResponse<T>(
-        this DomainError error, ControllerBase controller)
-    {
-        return controller.StatusCode(
-            BuildProblemDetails.MapStatusCode(error.Type),
-            ApiResponse<T>.Fail(error, controller.HttpContext));
-    }
-
-    public static ActionResult<ApiResponse<T>> ToCreatedAt<T>(
-        this T dto, ControllerBase controller, string actionName, object routeValues)
-    {
-        return controller.CreatedAtAction(actionName, routeValues, ApiResponse<T>.Ok(dto));
+        return new ObjectResult(ApiResponse<T>.Fail(error, httpContext))
+        {
+            StatusCode = BuildProblemDetails.MapStatusCode(error.Type)
+        };
     }
 }

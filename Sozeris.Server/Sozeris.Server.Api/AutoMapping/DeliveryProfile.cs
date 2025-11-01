@@ -9,10 +9,10 @@ public class DeliveryProfile : Profile
 {
     public DeliveryProfile()
     {
-        CreateMap<DeliveryHistory, DeliveryForHistoryDTO>().ReverseMap();
+        CreateMap<DeliveryHistory, DeliveryForHistoryDto>().ReverseMap();
         
-        CreateMap<DeliveryItem, DeliveryItemDTO>().ReverseMap();
-        CreateMap<Delivery, DeliveryForDayDTO>()
+        CreateMap<DeliveryItem, DeliveryItemDto>().ReverseMap();
+        CreateMap<Delivery, DeliveryForDayDto>()
             .ForMember(d => d.Items, opt => opt.MapFrom(s => s.Items))
             .ReverseMap();
     }

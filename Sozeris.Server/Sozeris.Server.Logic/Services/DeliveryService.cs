@@ -18,7 +18,7 @@ public class DeliveryService : IDeliveryService
         _deliveryHistoryRepository = deliveryHistoryRepository;
     }
 
-    public async Task<IReadOnlyList<Delivery>> GetDeliveriesForDayAsync(CancellationToken ct)
+    public async Task<IReadOnlyList<Delivery>> GetDeliveriesTodayAsync(CancellationToken ct)
     {
         var today = DateTime.UtcNow.Date;
 
@@ -37,7 +37,7 @@ public class DeliveryService : IDeliveryService
                     Address = s.User.Address,
                     Date = today,
                     Status = history?.Status ?? DeliveryStatus.Pending,
-                    Reason = history?.Reason ?? "Обратитесь в поддержку",
+                    Reason = history?.Reason,
                     Items = s.Orders.Select(o => new DeliveryItem
                     {
                         ProductName = o.Product.Name,
@@ -66,6 +66,7 @@ public class DeliveryService : IDeliveryService
 
         var history = new DeliveryHistory
         {
+            UserId = 1,
             SubscriptionId = subscriptionId,
             DeliveryDate = today,
             Status = status,

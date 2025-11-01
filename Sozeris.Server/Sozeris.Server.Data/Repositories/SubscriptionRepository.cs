@@ -55,4 +55,6 @@ public class SubscriptionRepository : ISubscriptionRepository
         await _context.SaveChangesAsync(ct);
         return subscription;
     }
+
+    public async Task SaveAsync(CancellationToken ct) => await _context.SaveChangesAsync(ct);
 }
