@@ -66,6 +66,7 @@ public class DeliveryService : IDeliveryService
 
         var history = new DeliveryHistory
         {
+            UserId = 1,
             SubscriptionId = subscriptionId,
             DeliveryDate = today,
             Status = status,
